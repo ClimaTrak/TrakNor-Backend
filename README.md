@@ -1,0 +1,2 @@
+# trakos-core
+ Backend Django
