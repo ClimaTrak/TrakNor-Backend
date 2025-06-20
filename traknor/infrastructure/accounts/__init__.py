@@ -1,3 +1,5 @@
-from traknor.infrastructure.models.user import User  # noqa: F401
+from django.contrib.auth import get_user_model
+
+User = get_user_model()  # Isso evita carregar o model antes da hora
 
 default_app_config = "traknor.infrastructure.accounts.apps.AccountsInfraConfig"
