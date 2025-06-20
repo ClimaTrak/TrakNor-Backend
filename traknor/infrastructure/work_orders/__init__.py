@@ -1,3 +1,5 @@
-from .models import WorkOrder  # noqa: F401
+"""
+Work Orders infrastructure package.
 
-default_app_config = "traknor.infrastructure.work_orders.apps.WorkOrdersInfraConfig"
+NÃO importe models aqui; isso dispara AppRegistryNotReady durante o bootstrap.
+"""
