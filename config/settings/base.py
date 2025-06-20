@@ -21,6 +21,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
     'traknor.infrastructure.accounts',
     'traknor.infrastructure.equipment',
     'traknor.infrastructure.work_orders',
