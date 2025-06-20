@@ -23,7 +23,6 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "rest_framework",
     "rest_framework_simplejwt",
-    "traknor.infrastructure.accounts",
     "traknor.infrastructure.accounts.apps.AccountsInfraConfig",
     "traknor.infrastructure.equipment",
     "traknor.infrastructure.work_orders",
