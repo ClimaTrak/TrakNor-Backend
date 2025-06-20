@@ -5,6 +5,7 @@ Django 4.2 project following Clean Architecture.
 ## Setup
 
 ```bash
+cp .env.example .env
 make setup
 ```
 
