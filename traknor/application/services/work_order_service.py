@@ -1,0 +1,64 @@
+from __future__ import annotations
+
+from datetime import date
+from uuid import uuid4
+from typing import List
+
+from traknor.domain.work_order import WorkOrder
+from traknor.infrastructure.work_orders.models import WorkOrder as WorkOrderModel
+
+
+def _to_domain(obj: WorkOrderModel) -> WorkOrder:
+    return WorkOrder(
+        id=obj.id,
+        code=obj.code,
+        equipment_id=obj.equipment_id,
+        status=obj.status,
+        priority=obj.priority,
+        scheduled_date=obj.scheduled_date,
+        completed_date=obj.completed_date,
+        created_by_id=obj.created_by_id,
+        description=obj.description,
+        cost=float(obj.cost),
+    )
+
+
+def create(data: dict) -> WorkOrder:
+    obj = WorkOrderModel.objects.create(
+        code=uuid4(),
+        status="Aberta",
+        **data,
+    )
+    return _to_domain(obj)
+
+
+def update_status(work_order_id: int, new_status: str) -> WorkOrder:
+    obj = WorkOrderModel.objects.get(id=work_order_id)
+    valid = {"Aberta": "Em Execução", "Em Execução": "Concluída"}
+    if valid.get(obj.status) != new_status:
+        raise ValueError("Invalid status transition")
+    obj.status = new_status
+    if new_status == "Concluída" and obj.completed_date is None:
+        obj.completed_date = date.today()
+    obj.save()
+    return _to_domain(obj)
+
+
+def list_by_filter(
+    *, status: str | None = None,
+    equipment_location: str | None = None,
+    start_date: date | None = None,
+    end_date: date | None = None,
+) -> List[WorkOrder]:
+    qs = WorkOrderModel.objects.all()
+    if status:
+        qs = qs.filter(status=status)
+    if equipment_location:
+        qs = qs.filter(equipment__location=equipment_location)
+    if start_date and end_date:
+        qs = qs.filter(scheduled_date__range=(start_date, end_date))
+    elif start_date:
+        qs = qs.filter(scheduled_date__gte=start_date)
+    elif end_date:
+        qs = qs.filter(scheduled_date__lte=end_date)
+    return [_to_domain(obj) for obj in qs]
