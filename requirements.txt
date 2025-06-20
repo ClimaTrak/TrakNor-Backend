@@ -4,3 +4,4 @@ django-environ
 pytest-django
 black
 ruff
+djangorestframework
