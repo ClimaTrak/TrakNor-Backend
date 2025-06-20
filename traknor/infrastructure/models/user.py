@@ -59,6 +59,8 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     class Meta:
         app_label = "infra_accounts"
+        verbose_name = "user"
+        verbose_name_plural = "users"
 
     def __str__(self) -> str:  # pragma: no cover - simple representation
         return self.email
