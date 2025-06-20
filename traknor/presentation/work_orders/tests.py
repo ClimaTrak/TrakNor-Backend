@@ -3,7 +3,7 @@ from datetime import date
 
 from traknor.application.services import work_order_service
 from traknor.infrastructure.equipment.models import EquipmentModel
-from traknor.infrastructure.models.user import User
+from traknor.infrastructure.accounts.user import User
 
 pytestmark = pytest.mark.django_db
 

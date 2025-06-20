@@ -3,7 +3,7 @@ from uuid import uuid4
 from django.db import models
 
 from traknor.infrastructure.equipment.models import EquipmentModel
-from traknor.infrastructure.models.user import User
+from traknor.infrastructure.accounts.user import User
 
 
 class WorkOrder(models.Model):

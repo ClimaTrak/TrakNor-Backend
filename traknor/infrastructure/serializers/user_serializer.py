@@ -2,7 +2,7 @@
 
 from rest_framework import serializers
 
-from traknor.infrastructure.models.user import User
+from traknor.infrastructure.accounts.user import User
 
 
 class UserSerializer(serializers.ModelSerializer):
