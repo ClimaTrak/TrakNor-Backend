@@ -1,0 +1,2 @@
+# Models for equipment app.
+
