@@ -5,4 +5,5 @@ pytest-django
 black
 ruff
 djangorestframework
+djangorestframework-simplejwt
 
