@@ -1,4 +1,5 @@
-from django.contrib.auth import get_user_model
+"""
+Infrastructure Accounts package.
 
-User = get_user_model()  # Isso evita carregar o model antes da hora
-
+Importar modelos aqui causava AppRegistryNotReady.  Mantemos vazio.
+"""
