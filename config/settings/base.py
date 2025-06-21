@@ -25,9 +25,11 @@ INSTALLED_APPS = [
     "rest_framework_simplejwt",
     "traknor.infrastructure.accounts.apps.AccountsInfraConfig",
     "traknor.infrastructure.equipment",
+    "traknor.infrastructure.assets",
     "traknor.infrastructure.work_orders",
     "traknor.presentation.accounts",
     "traknor.presentation.equipment",
+    "traknor.presentation.assets",
     "traknor.presentation.dashboard",
     "traknor.presentation.work_orders",
 ]
