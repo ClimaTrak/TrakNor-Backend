@@ -8,9 +8,9 @@ from .views import EquipmentViewSet
 # prefix. Tests expect the un-namespaced route name.
 
 router = DefaultRouter()
-router.register(r'', EquipmentViewSet, basename='equipment')
+router.register(r"", EquipmentViewSet, basename="equipment")
 
 urlpatterns = [
-    path('', include(router.urls)),
-    path('import/', EquipmentImportView.as_view(), name='equipment-import'),
+    path("", include(router.urls)),
+    path("import/", EquipmentImportView.as_view(), name="equipment-import"),
 ]

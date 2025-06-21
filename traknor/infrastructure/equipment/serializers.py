@@ -7,11 +7,11 @@ class EquipmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = EquipmentModel
         fields = [
-            'id',
-            'name',
-            'description',
-            'type',
-            'location',
-            'criticality',
-            'status',
+            "id",
+            "name",
+            "description",
+            "type",
+            "location",
+            "criticality",
+            "status",
         ]

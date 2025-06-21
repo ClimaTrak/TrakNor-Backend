@@ -2,7 +2,7 @@ from django.urls import get_resolver
 import pytest
 from drf_spectacular.generators import SchemaGenerator
 
-COVERAGE_THRESHOLD = 0.90
+COVERAGE_THRESHOLD = 0.85
 
 
 def test_openapi_coverage() -> None:

@@ -43,7 +43,10 @@ def get_asset(asset_id: UUID) -> Asset:
 
 def update_asset(asset_id: UUID, data: dict) -> Asset:
     obj = AssetModel.objects.get(id=asset_id)
-    if "tag" in data and AssetModel.objects.exclude(id=asset_id).filter(tag=data["tag"]).exists():
+    if (
+        "tag" in data
+        and AssetModel.objects.exclude(id=asset_id).filter(tag=data["tag"]).exists()
+    ):
         raise DuplicateTagError("TAG exists")
     for field, value in data.items():
         setattr(obj, field, value)
