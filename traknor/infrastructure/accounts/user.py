@@ -7,14 +7,17 @@ from django.contrib.auth.models import (
     BaseUserManager,
     PermissionsMixin,
 )
+from typing import Any
 from django.db import models
 from django.utils import timezone
 
 
-class UserManager(BaseUserManager):
+class UserManager(BaseUserManager["User"]):
     """Manager for custom User model."""
 
-    def create_user(self, email: str, password: str | None = None, **extra_fields):
+    def create_user(
+        self, email: str, password: str | None = None, **extra_fields: Any
+    ) -> "User":
         if not email:
             raise ValueError("The Email field must be set")
         email = self.normalize_email(email)
@@ -23,7 +26,9 @@ class UserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, email: str, password: str | None = None, **extra_fields):
+    def create_superuser(
+        self, email: str, password: str | None = None, **extra_fields: Any
+    ) -> "User":
         extra_fields.setdefault("is_staff", True)
         extra_fields.setdefault("is_superuser", True)
         extra_fields.setdefault("is_active", True)
@@ -44,13 +49,13 @@ class User(AbstractBaseUser, PermissionsMixin):
         TECHNICIAN = "TECH", "Técnico"
         CLIENT = "CLIENT", "Cliente"
 
-    email = models.EmailField(unique=True)
-    first_name = models.CharField(max_length=150)
-    last_name = models.CharField(max_length=150)
-    role = models.CharField(max_length=20, choices=Roles.choices)
-    is_active = models.BooleanField(default=True)
-    is_staff = models.BooleanField(default=False)
-    date_joined = models.DateTimeField(default=timezone.now)
+    email: str = models.EmailField(unique=True)  # type: ignore[assignment]
+    first_name: str = models.CharField(max_length=150)  # type: ignore[assignment]
+    last_name: str = models.CharField(max_length=150)  # type: ignore[assignment]
+    role: str = models.CharField(max_length=20, choices=Roles.choices)  # type: ignore[assignment]
+    is_active: bool = models.BooleanField(default=True)  # type: ignore[assignment]
+    is_staff: bool = models.BooleanField(default=False)  # type: ignore[assignment]
+    date_joined: timezone.datetime = models.DateTimeField(default=timezone.now)  # type: ignore[assignment]
 
     objects = UserManager()
 

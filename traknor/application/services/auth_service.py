@@ -3,8 +3,9 @@
 from __future__ import annotations
 
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import AbstractBaseUser
 
-User = get_user_model()
+UserModel = get_user_model()
 
 
 class AuthService:
@@ -13,10 +14,10 @@ class AuthService:
     @staticmethod
     def create_user(
         *, email: str, password: str, first_name: str, last_name: str, role: str
-    ) -> User:
+    ) -> AbstractBaseUser:
         """Create a regular user using the configured manager."""
 
-        return User.objects.create_user(
+        return UserModel.objects.create_user(
             email=email,
             password=password,
             first_name=first_name,
