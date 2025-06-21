@@ -1,159 +1,159 @@
 openapi: 3.1.0
 info:
-  title: TrakNor API – Assets
-  version: "1.0"
-  description: |
-    Endpoints para cadastro, listagem, edição e remoção de equipamentos HVAC.
+title: TrakNor API – Assets
+version: "1.0"
+description: |
+ Endpoints para cadastro, listagem, edição e remoção de equipamentos HVAC.
 tags:
-  - name: Assets
-    description: Gestão de equipamentos
+- name: Assets
+ description: Gestão de equipamentos
 paths:
-  /api/assets:
-    get:
-      summary: Lista todos os equipamentos
-      tags: [Assets]
-      responses:
-        "200":
-          description: Lista paginada de equipamentos
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/PaginatedAssets"
-    post:
-      summary: Cria um novo equipamento
-      tags: [Assets]
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/AssetCreate"
-      responses:
-        "201":
-          description: Equipamento criado
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Asset"
-        "422":
-          description: TAG duplicada
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error422"
-  /api/assets/{id}:
-    parameters:
-      - in: path
-        name: id
-        required: true
-        schema:
-          type: string
-        description: ID do equipamento
-    get:
-      summary: Detalha um equipamento
-      tags: [Assets]
-      responses:
-        "200":
-          description: Equipamento encontrado
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Asset"
-        "404":
-          description: Equipamento não encontrado
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error404"
-    put:
-      summary: Atualiza um equipamento
-      tags: [Assets]
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/AssetUpdate"
-      responses:
-        "200":
-          description: Equipamento atualizado
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Asset"
-        "422":
-          description: TAG duplicada
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error422"
-    delete:
-      summary: Remove (soft delete) um equipamento
-      tags: [Assets]
-      responses:
-        "204":
-          description: Equipamento removido
+/api/assets:
+ get:
+   summary: Lista todos os equipamentos
+   tags: [Assets]
+   responses:
+     "200":
+       description: Lista paginada de equipamentos
+       content:
+         application/json:
+           schema:
+             $ref: "#/components/schemas/PaginatedAssets"
+ post:
+   summary: Cria um novo equipamento
+   tags: [Assets]
+   requestBody:
+     required: true
+     content:
+       application/json:
+         schema:
+           $ref: "#/components/schemas/AssetCreate"
+   responses:
+     "201":
+       description: Equipamento criado
+       content:
+         application/json:
+           schema:
+             $ref: "#/components/schemas/Asset"
+     "422":
+       description: TAG duplicada
+       content:
+         application/json:
+           schema:
+             $ref: "#/components/schemas/Error422"
+/api/assets/{id}:
+ parameters:
+   - in: path
+     name: id
+     required: true
+     schema:
+       type: string
+     description: ID do equipamento
+ get:
+   summary: Detalha um equipamento
+   tags: [Assets]
+   responses:
+     "200":
+       description: Equipamento encontrado
+       content:
+         application/json:
+           schema:
+             $ref: "#/components/schemas/Asset"
+     "404":
+       description: Equipamento não encontrado
+       content:
+         application/json:
+           schema:
+             $ref: "#/components/schemas/Error404"
+ put:
+   summary: Atualiza um equipamento
+   tags: [Assets]
+   requestBody:
+     required: true
+     content:
+       application/json:
+         schema:
+           $ref: "#/components/schemas/AssetUpdate"
+   responses:
+     "200":
+       description: Equipamento atualizado
+       content:
+         application/json:
+           schema:
+             $ref: "#/components/schemas/Asset"
+     "422":
+       description: TAG duplicada
+       content:
+         application/json:
+           schema:
+             $ref: "#/components/schemas/Error422"
+ delete:
+   summary: Remove (soft delete) um equipamento
+   tags: [Assets]
+   responses:
+     "204":
+       description: Equipamento removido
 components:
-  schemas:
-    Asset:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-        tag:
-          type: string
-        nome:
-          type: string
-        modelo:
-          type: string
-        localizacao:
-          type: string
-        btus:
-          type: integer
-      required: [id, tag, nome, modelo, localizacao, btus]
-    AssetCreate:
-      allOf:
-        - $ref: "#/components/schemas/AssetUpdate"
-        - required: [tag]
-    AssetUpdate:
-      type: object
-      properties:
-        tag:
-          type: string
-        nome:
-          type: string
-        modelo:
-          type: string
-        localizacao:
-          type: string
-        btus:
-          type: integer
-    PaginatedAssets:
-      type: object
-      properties:
-        count:
-          type: integer
-        next:
-          type: string
-          nullable: true
-        previous:
-          type: string
-          nullable: true
-        results:
-          type: array
-          items:
-            $ref: "#/components/schemas/Asset"
-      required: [count, results]
-    Error422:
-      type: object
-      properties:
-        detail:
-          type: string
-          example: "TAG duplicada para este cliente."
-    Error404:
-      type: object
-      properties:
-        detail:
-          type: string
-          example: "Equipamento não encontrado."
+schemas:
+ Asset:
+   type: object
+   properties:
+     id:
+       type: string
+       format: uuid
+     tag:
+       type: string
+     nome:
+       type: string
+     modelo:
+       type: string
+     localizacao:
+       type: string
+     btus:
+       type: integer
+   required: [id, tag, nome, modelo, localizacao, btus]
+ AssetCreate:
+   allOf:
+     - $ref: "#/components/schemas/AssetUpdate"
+     - required: [tag]
+ AssetUpdate:
+   type: object
+   properties:
+     tag:
+       type: string
+     nome:
+       type: string
+     modelo:
+       type: string
+     localizacao:
+       type: string
+     btus:
+       type: integer
+ PaginatedAssets:
+   type: object
+   properties:
+     count:
+       type: integer
+     next:
+       type: string
+       nullable: true
+     previous:
+       type: string
+       nullable: true
+     results:
+       type: array
+       items:
+         $ref: "#/components/schemas/Asset"
+   required: [count, results]
+ Error422:
+   type: object
+   properties:
+     detail:
+       type: string
+       example: "TAG duplicada para este cliente."
+ Error404:
+   type: object
+   properties:
+     detail:
+       type: string
+       example: "Equipamento não encontrado."
