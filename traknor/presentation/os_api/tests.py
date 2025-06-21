@@ -1,6 +1,7 @@
+from datetime import date
+
 import pytest
 from django.urls import reverse
-from datetime import date
 
 from traknor.infrastructure.accounts.user import User
 from traknor.infrastructure.equipment.models import EquipmentModel

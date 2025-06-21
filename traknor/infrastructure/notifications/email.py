@@ -1,4 +1,5 @@
 from django.core.mail import send_mail
+
 from traknor.infrastructure.work_orders.models import WorkOrder
 
 

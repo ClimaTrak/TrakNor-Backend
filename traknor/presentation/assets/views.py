@@ -2,8 +2,10 @@ from rest_framework import status, viewsets
 from rest_framework.response import Response
 
 from traknor.application.services.asset_service import (
-    create as create_asset,
     DuplicateTagError,
+)
+from traknor.application.services.asset_service import (
+    create as create_asset,
 )
 from traknor.infrastructure.assets.serializers import AssetSerializer
 

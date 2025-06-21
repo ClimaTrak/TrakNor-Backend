@@ -1,11 +1,12 @@
-import pytest
 from datetime import date
 
-from traknor.application.services import work_order_service
-from traknor.infrastructure.equipment.models import EquipmentModel
-from traknor.infrastructure.accounts.user import User
-from traknor.infrastructure.models.work_order_history import WorkOrderHistory
+import pytest
 from rest_framework.test import APIClient
+
+from traknor.application.services import work_order_service
+from traknor.infrastructure.accounts.user import User
+from traknor.infrastructure.equipment.models import EquipmentModel
+from traknor.infrastructure.models.work_order_history import WorkOrderHistory
 
 pytestmark = pytest.mark.django_db
 

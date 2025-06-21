@@ -1,8 +1,8 @@
 from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 
-from .views import EquipmentViewSet
 from .import_view import EquipmentImportView
+from .views import EquipmentViewSet
 
 # Do not namespace these routes so reverse('equipment-list') works without a
 # prefix. Tests expect the un-namespaced route name.

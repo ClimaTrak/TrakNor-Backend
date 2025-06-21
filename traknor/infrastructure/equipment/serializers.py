@@ -1,5 +1,7 @@
 from rest_framework import serializers
+
 from .models import EquipmentModel
+
 
 class EquipmentSerializer(serializers.ModelSerializer):
     class Meta:
