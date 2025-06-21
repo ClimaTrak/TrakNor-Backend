@@ -1,0 +1,49 @@
+openapi: 3.0.0
+info:
+  title: TrakNor API
+  version: 1.0.0
+paths:
+  /api/assets/:
+    post:
+      summary: Create Asset
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AssetInput'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  assetId:
+                    type: string
+        '422':
+          description: Duplicate tag
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: TAG exists
+components:
+  schemas:
+    AssetInput:
+      type: object
+      required: [name, tag, model, location]
+      properties:
+        name:
+          type: string
+        tag:
+          type: string
+          maxLength: 30
+        model:
+          type: integer
+        location:
+          type: object
