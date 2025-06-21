@@ -1,5 +1,6 @@
 from datetime import date
 
+from drf_spectacular.utils import OpenApiParameter, extend_schema
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -15,13 +16,20 @@ from traknor.infrastructure.work_orders.serializers import (
     WorkOrderSerializerList,
     WorkOrderSerializerOpen,
 )
+from traknor.presentation.core.mixins import SpectacularMixin
+
+from .serializers import ExecuteResultSerializer
 
 
-class OsListView(APIView):
+class OsListView(SpectacularMixin, APIView):
     """List work orders assigned to a user on a specific date."""
 
     permission_classes = [IsAuthenticated]
 
+    @extend_schema(
+        parameters=[OpenApiParameter("assignee", int, OpenApiParameter.QUERY)],
+        responses=WorkOrderSerializerList(many=True),
+    )
     def get(self, request):
         assignee = request.query_params.get("assignee")
         date_param = request.query_params.get("date")
@@ -47,11 +55,12 @@ class OsListView(APIView):
         return Response(serializer.data)
 
 
-class OpenOrdersListView(APIView):
+class OpenOrdersListView(SpectacularMixin, APIView):
     """List open work orders with optional pagination."""
 
     permission_classes = [IsAuthenticated]
 
+    @extend_schema(responses=WorkOrderSerializerOpen(many=True))
     def get(self, request):
         limit = request.query_params.get("limit")
         offset = request.query_params.get("offset")
@@ -74,14 +83,19 @@ class OpenOrdersListView(APIView):
         return Response(serializer.data)
 
 
-class OsExecuteView(APIView):
+class OsExecuteView(SpectacularMixin, APIView):
     """Mark a work order as executed by the authenticated user."""
 
     permission_classes = [IsAuthenticated]
 
-    def patch(self, request, pk):
+    @extend_schema(
+        parameters=[OpenApiParameter("id", int, OpenApiParameter.PATH)],
+        request=None,
+        responses=ExecuteResultSerializer,
+    )
+    def patch(self, request, id):
         try:
-            wo = execute_order(int(pk), request.user)
+            wo = execute_order(int(id), request.user)
         except WorkOrderModel.DoesNotExist:
             return Response(status=404)
         except PermissionError:

@@ -25,7 +25,7 @@ jobs:
       - name: Generate & validate OpenAPI
         run: |
           python manage.py spectacular --file schema/openapi.json
-          python -m drf_spectacular --validate schema/openapi.json
+          spectacular --validate schema/openapi.json
       - name: Export fallback DATABASE_URL
         run: echo "DATABASE_URL=sqlite:///$(pwd)/ci.db.sqlite3" >> $GITHUB_ENV
       - name: Run migrations

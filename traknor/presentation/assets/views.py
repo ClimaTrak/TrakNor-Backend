@@ -9,10 +9,15 @@ from traknor.infrastructure.assets.serializers import (
     AssetSerializer,
     AssetUpdateSerializer,
 )
+from traknor.presentation.core.mixins import SpectacularMixin
 
 
-class AssetViewSet(viewsets.ViewSet):
+class AssetViewSet(SpectacularMixin, viewsets.ModelViewSet):
     """Provide CRUD operations for assets."""
+
+    serializer_class = AssetSerializer
+    queryset = AssetModel.objects.all()
+    lookup_field = "id"
 
     def list(self, request):
         assets = asset_service.list_assets()
@@ -28,28 +33,28 @@ class AssetViewSet(viewsets.ViewSet):
             return Response({"error": "TAG exists"}, status=422)
         return Response({"assetId": str(asset.id)}, status=status.HTTP_201_CREATED)
 
-    def retrieve(self, request, pk=None):
+    def retrieve(self, request, id=None):
         try:
-            asset = asset_service.get_asset(pk)
+            asset = asset_service.get_asset(id)
         except AssetModel.DoesNotExist:
             return Response(status=404)
         serializer = AssetSerializer(asset)
         return Response(serializer.data)
 
-    def update(self, request, pk=None):
+    def update(self, request, id=None):
         serializer = AssetUpdateSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         try:
-            asset = asset_service.update_asset(pk, serializer.validated_data)
+            asset = asset_service.update_asset(id, serializer.validated_data)
         except AssetModel.DoesNotExist:
             return Response(status=404)
         except DuplicateTagError:
             return Response({"error": "TAG exists"}, status=422)
         return Response(AssetSerializer(asset).data)
 
-    def destroy(self, request, pk=None):
+    def destroy(self, request, id=None):
         try:
-            asset_service.delete_asset(pk)
+            asset_service.delete_asset(id)
         except AssetModel.DoesNotExist:
             return Response(status=404)
         return Response(status=204)

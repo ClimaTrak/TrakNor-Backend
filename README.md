@@ -32,7 +32,7 @@ python manage.py runserver
 
 ```bash
 python manage.py spectacular --file schema/openapi.json
-python -m drf_spectacular --validate schema/openapi.json
+spectacular --validate schema/openapi.json
 ```
 
 ## Lint and Test
