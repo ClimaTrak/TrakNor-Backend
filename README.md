@@ -36,3 +36,5 @@ pytest
 - `/api/equipment/` – list and create equipment. Supports CSV import via `/import/`.
 - `/api/work-orders/` – manage work orders and view history.
 - `/api/dashboard/summary/` – dashboard metrics.
+
+Note: This repository is a Django backend. Node.js/TypeScript features mentioned in some tasks are not applicable.
