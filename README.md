@@ -28,6 +28,16 @@ python manage.py createsuperuser  # optional
 python manage.py runserver
 ```
 
+### User Roles
+
+Users can have one of the following roles:
+
+- `admin`
+- `manager`
+- `technician` (default)
+
+Use `/api/profile/` to fetch the authenticated user's data including `role`.
+
 ## Como gerar docs localmente
 
 ```bash

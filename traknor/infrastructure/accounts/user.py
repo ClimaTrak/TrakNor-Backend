@@ -45,14 +45,18 @@ class User(AbstractBaseUser, PermissionsMixin):
     """Custom User model using email as username."""
 
     class Roles(models.TextChoices):
-        ADMIN = "ADMIN", "Admin"
-        TECHNICIAN = "TECH", "Técnico"
-        CLIENT = "CLIENT", "Cliente"
+        ADMIN = "admin", "Administrador"
+        MANAGER = "manager", "Gestor"
+        TECHNICIAN = "technician", "Técnico"
 
     email: str = models.EmailField(unique=True)  # type: ignore[assignment]
     first_name: str = models.CharField(max_length=150)  # type: ignore[assignment]
     last_name: str = models.CharField(max_length=150)  # type: ignore[assignment]
-    role: str = models.CharField(max_length=20, choices=Roles.choices)  # type: ignore[assignment]
+    role: str = models.CharField(
+        max_length=20,
+        choices=Roles.choices,
+        default=Roles.TECHNICIAN,
+    )  # type: ignore[assignment]
     is_active: bool = models.BooleanField(default=True)  # type: ignore[assignment]
     is_staff: bool = models.BooleanField(default=False)  # type: ignore[assignment]
     date_joined: timezone.datetime = models.DateTimeField(default=timezone.now)  # type: ignore[assignment]

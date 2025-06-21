@@ -18,7 +18,7 @@ def _create_basic_objects():
         password="pass",
         first_name="Tech",
         last_name="User",
-        role="TECH",
+        role="technician",
     )
     equip = EquipmentModel.objects.create(
         name="EQ1",
@@ -254,3 +254,18 @@ def test_patch_status_persists(api_client):
     from traknor.infrastructure.work_orders.models import WorkOrder as WOModel
 
     assert WOModel.objects.get(id=wo.id).status == WorkOrderStatus.IN_PROGRESS.value
+
+
+def test_workorder_list_endpoint(api_client, work_order):
+    response = api_client.get("/api/work-orders/")
+    assert response.status_code == 200
+    assert response.json()[0]["id"] == work_order.id
+
+
+def test_delete_workorder(api_client, work_order):
+    from traknor.infrastructure.work_orders.models import WorkOrder as WOModel
+
+    obj = WOModel.objects.get(id=work_order.id)
+    api_client.force_authenticate(user=obj.created_by)
+    resp = api_client.delete(f"/api/work-orders/{obj.id}/")
+    assert resp.status_code == 204

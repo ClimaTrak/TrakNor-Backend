@@ -13,3 +13,6 @@ pretty = true
 show_error_codes = true
 allow_untyped_globals = true
 disable_error_code = ["var-annotated"]
+
+[tool.coverage.run]
+omit = ["*/migrations/*"]

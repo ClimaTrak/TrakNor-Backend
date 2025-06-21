@@ -16,7 +16,7 @@ def _setup():
         password="pass",
         first_name="Tech",
         last_name="User",
-        role="TECH",
+        role="technician",
     )
     equip = EquipmentModel.objects.create(
         name="EQ1",
