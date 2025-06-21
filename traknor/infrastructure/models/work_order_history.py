@@ -1,7 +1,7 @@
 from django.db import models
 
-from traknor.infrastructure.work_orders.models import WorkOrder
 from traknor.infrastructure.accounts.user import User
+from traknor.infrastructure.work_orders.models import WorkOrder
 
 
 class WorkOrderHistory(models.Model):

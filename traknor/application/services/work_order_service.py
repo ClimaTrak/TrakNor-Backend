@@ -1,16 +1,16 @@
 from __future__ import annotations
 
 from datetime import date
-from uuid import uuid4
 from typing import List
+from uuid import uuid4
 
 from traknor.domain.work_order import WorkOrder, WorkOrderHistory
-from traknor.infrastructure.work_orders.models import WorkOrder as WorkOrderModel
+from traknor.infrastructure.accounts.user import User
 from traknor.infrastructure.models.work_order_history import (
     WorkOrderHistory as WorkOrderHistoryModel,
 )
-from traknor.infrastructure.accounts.user import User
 from traknor.infrastructure.notifications.email import send_work_order_completed
+from traknor.infrastructure.work_orders.models import WorkOrder as WorkOrderModel
 
 
 def _to_domain(obj: WorkOrderModel) -> WorkOrder:

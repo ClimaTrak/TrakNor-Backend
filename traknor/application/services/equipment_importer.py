@@ -1,6 +1,6 @@
 import csv
 import io
-from typing import List, Dict, Tuple
+from typing import Dict, List, Tuple
 
 from django.core.exceptions import ValidationError
 

@@ -1,9 +1,9 @@
-from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.views import APIView
 
-from traknor.infrastructure.pmoc.serializers import GeneratePmocSerializer
 from traknor.application.services import generate_pmoc
 from traknor.application.services.pmoc_service import AssetNotFoundError
+from traknor.infrastructure.pmoc.serializers import GeneratePmocSerializer
 
 
 class PmocGenerateView(APIView):
@@ -20,4 +20,7 @@ class PmocGenerateView(APIView):
         except AssetNotFoundError:
             return Response({"error": "Asset not found"}, status=404)
 
-        return Response({"schedule": [s.date.isoformat() for s in schedule]}, status=201)
+        return Response(
+            {"schedule": [s.date.isoformat() for s in schedule]},
+            status=201,
+        )

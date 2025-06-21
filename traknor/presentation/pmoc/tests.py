@@ -1,8 +1,8 @@
 import pytest
 from django.urls import reverse
 
-from traknor.infrastructure.equipment.models import EquipmentModel
 from traknor.infrastructure.assets.models import AssetModel
+from traknor.infrastructure.equipment.models import EquipmentModel
 
 pytestmark = pytest.mark.django_db
 
