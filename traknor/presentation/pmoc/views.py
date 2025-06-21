@@ -7,6 +7,8 @@ from traknor.infrastructure.pmoc.serializers import GeneratePmocSerializer
 
 
 class PmocGenerateView(APIView):
+    """Generate PMOC schedules for an asset."""
+
     def post(self, request):
         serializer = GeneratePmocSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)

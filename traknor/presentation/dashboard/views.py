@@ -9,6 +9,8 @@ from traknor.application.services.dashboard_service import (
 
 
 class DashboardSummaryView(APIView):
+    """Provide summary metrics for the dashboard."""
+
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
@@ -17,6 +19,8 @@ class DashboardSummaryView(APIView):
 
 
 class KPIView(APIView):
+    """Expose basic KPI metrics."""
+
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
