@@ -9,7 +9,7 @@ from traknor.infrastructure.equipment.serializers import EquipmentSerializer
 
 
 class EquipmentViewSet(viewsets.ViewSet):
-    """ViewSet for managing Equipment."""
+    """ViewSet providing list and create operations for equipment."""
 
     def list(self, request):
         equipments = list_equipment()
