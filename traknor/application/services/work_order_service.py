@@ -10,6 +10,7 @@ from traknor.infrastructure.models.work_order_history import (
     WorkOrderHistory as WorkOrderHistoryModel,
 )
 from traknor.infrastructure.accounts.user import User
+from traknor.infrastructure.notifications.email import send_work_order_completed
 
 
 def _to_domain(obj: WorkOrderModel) -> WorkOrder:
@@ -61,6 +62,7 @@ def update_status(work_order_id: int, new_status: str, changed_by: User) -> Work
     obj.status = new_status
     if new_status == "Concluída" and obj.completed_date is None:
         obj.completed_date = date.today()
+        send_work_order_completed(obj)
     obj.save()
     return _to_domain(obj)
 

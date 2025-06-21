@@ -147,3 +147,23 @@ def test_history_endpoint(api_client):
     assert len(data) == 2
     assert data[0]["new_status"] == "Concluída"
     assert data[1]["new_status"] == "Em Execução"
+
+
+def test_email_sent_on_completion(mailoutbox):
+    user, equip = _create_basic_objects()
+    wo = work_order_service.create(
+        {
+            "equipment": equip,
+            "priority": "Alta",
+            "scheduled_date": date.today(),
+            "created_by": user,
+            "description": "Teste",
+            "cost": 0,
+        }
+    )
+
+    work_order_service.update_status(wo.id, "Em Execução", user)
+    work_order_service.update_status(wo.id, "Concluída", user)
+
+    assert len(mailoutbox) == 1
+    assert mailoutbox[0].to == [user.email]
