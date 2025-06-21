@@ -6,4 +6,7 @@ black
 ruff
 djangorestframework
 djangorestframework-simplejwt
+weasyprint>=60.0
+pandas>=2.0
+xlsxwriter>=3.2
 

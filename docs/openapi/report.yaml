@@ -1,0 +1,36 @@
+paths:
+  /api/reports/:
+    get:
+      summary: Generate reports
+      parameters:
+        - in: query
+          name: type
+          required: true
+          schema:
+            type: string
+            enum: [equipment, workorder]
+          description: Dataset type
+        - in: query
+          name: format
+          required: false
+          schema:
+            type: string
+            enum: [pdf, xlsx]
+          description: Output format
+        - in: query
+          name: from
+          required: false
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: to
+          required: false
+          schema:
+            type: string
+            format: date
+      responses:
+        '200':
+          description: binary file
+        '400':
+          description: invalid params
