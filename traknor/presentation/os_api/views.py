@@ -4,8 +4,11 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from traknor.application.services import list_today_orders, execute_order
-from traknor.application.services import work_order_service
+from traknor.application.services import (
+    execute_order,
+    list_today_orders,
+    work_order_service,
+)
 from traknor.infrastructure.work_orders.models import WorkOrder as WorkOrderModel
 
 

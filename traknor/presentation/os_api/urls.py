@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import OsListView, OsExecuteView, OpenOrdersListView
+from .views import OpenOrdersListView, OsExecuteView, OsListView
 
 app_name = "os_api"
 
