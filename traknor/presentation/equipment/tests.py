@@ -55,3 +55,9 @@ def test_import_csv_with_errors(client):
     assert response.status_code == 400
     assert response.json()["created"] == 0
     assert len(response.json()["errors"]) == 1
+
+
+def test_import_without_file(client):
+    url = reverse("equipment-import")
+    response = client.post(url)
+    assert response.status_code == 400

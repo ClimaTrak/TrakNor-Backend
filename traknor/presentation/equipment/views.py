@@ -9,7 +9,10 @@ from traknor.infrastructure.equipment.serializers import EquipmentSerializer
 
 
 class EquipmentViewSet(viewsets.ViewSet):
-    """ViewSet providing list and create operations for equipment."""
+    """ViewSet providing list, create and CSV import operations for equipment.
+
+    CSV import is handled by :class:`EquipmentImportView` at ``/api/equipment/import/``.
+    """
 
     def list(self, request):
         equipments = list_equipment()

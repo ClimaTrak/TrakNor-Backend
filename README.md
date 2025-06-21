@@ -33,7 +33,7 @@ pytest
 ## API Overview
 
 - `/api/auth/` – JWT authentication (login, refresh, register).
-- `/api/equipment/` – list and create equipment. Supports CSV import via `/import/`.
+- `/api/equipment/` – list and create equipment. Supports CSV import via `/import/` endpoint.
 - `/api/work-orders/` – manage work orders and view history.
 - `/api/dashboard/summary/` – dashboard metrics.
 

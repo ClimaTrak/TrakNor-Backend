@@ -63,12 +63,67 @@ def test_status_transitions():
         }
     )
     assert wo.status == "Aberta"
+    wo = work_order_service.update_status(wo.id, "Em Espera", user)
+    assert wo.status == "Em Espera"
     wo = work_order_service.update_status(wo.id, "Em Execução", user)
     assert wo.status == "Em Execução"
     wo = work_order_service.update_status(wo.id, "Concluída", user)
     assert wo.status == "Concluída"
     with pytest.raises(ValueError):
         work_order_service.update_status(wo.id, "Aberta", user)
+
+
+@pytest.mark.parametrize(
+    "steps,new_status",
+    [
+        ([], "Em Execução"),
+        ([], "Em Espera"),
+        (["Em Espera"], "Em Execução"),
+        (["Em Execução"], "Concluída"),
+    ],
+)
+def test_update_status_valid_transitions(steps, new_status):
+    user, equip = _create_basic_objects()
+    wo = work_order_service.create(
+        {
+            "equipment": equip,
+            "priority": "Alta",
+            "scheduled_date": date.today(),
+            "created_by": user,
+            "description": "Check",
+            "cost": 0,
+        }
+    )
+    for status in steps:
+        work_order_service.update_status(wo.id, status, user)
+    wo = work_order_service.update_status(wo.id, new_status, user)
+    assert wo.status == new_status
+
+
+@pytest.mark.parametrize(
+    "steps,new_status",
+    [
+        ([], "Concluída"),
+        (["Em Execução"], "Em Espera"),
+        (["Em Espera"], "Concluída"),
+    ],
+)
+def test_update_status_invalid_transitions(steps, new_status):
+    user, equip = _create_basic_objects()
+    wo = work_order_service.create(
+        {
+            "equipment": equip,
+            "priority": "Alta",
+            "scheduled_date": date.today(),
+            "created_by": user,
+            "description": "Check",
+            "cost": 0,
+        }
+    )
+    for status in steps:
+        work_order_service.update_status(wo.id, status, user)
+    with pytest.raises(ValueError):
+        work_order_service.update_status(wo.id, new_status, user)
 
 
 def test_list_by_filter():
