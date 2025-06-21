@@ -1,10 +1,11 @@
+from drf_spectacular.utils import extend_schema
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from traknor.application.services import work_order_service, work_order_state_machine
-from traknor.infrastructure.work_orders.models import WorkOrder as WorkOrderModel
 from traknor.domain.constants import WorkOrderStatus
+from traknor.infrastructure.work_orders.models import WorkOrder as WorkOrderModel
 from traknor.infrastructure.work_orders.serializers import (
     WorkOrderSerializer,
     WorkOrderStatusSerializer,
@@ -12,11 +13,17 @@ from traknor.infrastructure.work_orders.serializers import (
 from traknor.infrastructure.work_orders.work_order_history_serializer import (
     WorkOrderHistorySerializer,
 )
+from traknor.presentation.core.mixins import SpectacularMixin
 
 
-class WorkOrderViewSet(viewsets.ViewSet):
+class WorkOrderViewSet(SpectacularMixin, viewsets.ViewSet):
     """Interface de listagem, criação, visualização e atualização de ordens de
     serviço. (sem exclusão)"""
+
+    serializer_class = WorkOrderSerializer
+    queryset = WorkOrderModel.objects.all()
+    lookup_field = "id"
+    lookup_value_regex = r"\d+"
 
     def list(self, request):
         work_orders = work_order_service.list_by_filter(
@@ -32,17 +39,17 @@ class WorkOrderViewSet(viewsets.ViewSet):
         wo = work_order_service.create(serializer.validated_data)
         return Response(wo.__dict__, status=201)
 
-    def retrieve(self, request, pk=None):
+    def retrieve(self, request, id=None):
         work_orders = work_order_service.list_by_filter()
         for wo in work_orders:
-            if str(wo.id) == str(pk):
+            if str(wo.id) == str(id):
                 return Response(wo.__dict__)
         return Response(status=404)
 
-    def update(self, request, pk=None):
+    def update(self, request, id=None):
         serializer = WorkOrderStatusSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        obj = WorkOrderModel.objects.get(id=pk)
+        obj = WorkOrderModel.objects.get(id=id)
         wo = work_order_state_machine.change_status(
             obj,
             WorkOrderStatus(serializer.validated_data["status"]),
@@ -51,19 +58,20 @@ class WorkOrderViewSet(viewsets.ViewSet):
         )
         return Response(wo.__dict__)
 
-    def partial_update(self, request, pk=None):
-        return self.update(request, pk)
+    def partial_update(self, request, id=None):
+        return self.update(request, id)
 
-    def destroy(self, request, pk=None):
+    def destroy(self, request, id=None):
         try:
-            obj = WorkOrderModel.objects.get(id=pk)
+            obj = WorkOrderModel.objects.get(id=id)
         except WorkOrderModel.DoesNotExist:
             return Response(status=404)
         obj.delete()
         return Response(status=204)
 
     @action(detail=True, methods=["get"])
-    def history(self, request, pk=None):
-        history = work_order_service.list_history(int(pk))
+    @extend_schema(responses=WorkOrderHistorySerializer(many=True))
+    def history(self, request, id=None):
+        history = work_order_service.list_history(int(id))
         serializer = WorkOrderHistorySerializer(history, many=True)
         return Response(serializer.data)

@@ -1,30 +1,36 @@
+from datetime import date
+
+from drf_spectacular.utils import extend_schema
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
-
-from datetime import date
 
 from traknor.application.services.dashboard_service import (
     get_dashboard_summary,
     get_kpis,
 )
+from traknor.presentation.core.mixins import SpectacularMixin
+
+from .serializers import DashboardSummarySerializer
 
 
-class DashboardSummaryView(APIView):
+class DashboardSummaryView(SpectacularMixin, APIView):
     """Provide summary metrics for the dashboard."""
 
     permission_classes = [IsAuthenticated]
 
+    @extend_schema(responses=DashboardSummarySerializer)
     def get(self, request):
         summary = get_dashboard_summary()
         return Response(summary)
 
 
-class KPIView(APIView):
+class KPIView(SpectacularMixin, APIView):
     """Expose basic KPI metrics."""
 
     permission_classes = [IsAuthenticated]
 
+    @extend_schema(responses=DashboardSummarySerializer)
     def get(self, request):
         try:
             from_param = request.query_params.get("from")

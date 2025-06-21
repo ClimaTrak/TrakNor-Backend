@@ -1,13 +1,25 @@
+from drf_spectacular.utils import extend_schema
 from rest_framework import status
+from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
-from rest_framework.views import APIView
 
 from traknor.application.services.equipment_importer import import_from_csv
 
+from .serializers import (
+    EquipmentImportSerializer,
+    ImportResultSerializer,
+)
 
-class EquipmentImportView(APIView):
+
+class EquipmentImportView(GenericAPIView):
     """Import equipments from a CSV file."""
 
+    serializer_class = EquipmentImportSerializer
+
+    @extend_schema(
+        request=EquipmentImportSerializer,
+        responses=ImportResultSerializer,
+    )
     def post(self, request):
         csv_file = request.FILES.get("file")
         if csv_file is None:
