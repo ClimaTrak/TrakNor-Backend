@@ -15,6 +15,8 @@ class WorkOrder:
     created_by_id: int
     description: str
     cost: float
+    revision: int
+    deleted_at: datetime | None
 
 
 @dataclass

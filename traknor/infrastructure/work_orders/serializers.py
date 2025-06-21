@@ -11,6 +11,7 @@ class WorkOrderSerializer(serializers.ModelSerializer):
             "code",
             "equipment",
             "status",
+            "revision",
             "priority",
             "scheduled_date",
             "completed_date",
@@ -26,7 +27,7 @@ class WorkOrderStatusSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = WorkOrder
-        fields = ["status"]
+        fields = ["status", "revision"]
 
 
 class WorkOrderSerializerList(serializers.Serializer):

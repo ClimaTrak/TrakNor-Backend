@@ -24,3 +24,35 @@ paths:
       responses:
         "200":
           description: OK
+  /api/work-orders/{id}/status/:
+    patch:
+      summary: Change work order status
+      tags: [WorkOrders]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                target:
+                  $ref: '#/components/schemas/WorkOrderStatus'
+                revision:
+                  type: integer
+              required: [target, revision]
+      responses:
+        '200': {description: OK}
+        '400': {description: Invalid transition}
+        '409': {description: Revision conflict}
+  /api/work-orders/{id}/:
+    delete:
+      summary: Soft delete work order
+      tags: [WorkOrders]
+      responses:
+        '204': {description: No content}
+        '404': {description: Not found}
+components:
+  schemas:
+    WorkOrderStatus:
+      type: string
+      enum: [OPEN, IN_PROGRESS, WAITING, DONE]
