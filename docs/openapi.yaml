@@ -90,6 +90,66 @@ paths:
                       type: integer
         '400':
           description: Invalid parameters
+  /api/os/{id}/execute/:
+    patch:
+      summary: Execute work order
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  status:
+                    type: string
+                  duration:
+                    type: integer
+        '403':
+          description: Forbidden
+        '404':
+          description: Not found
+  /api/os/open/:
+    get:
+      summary: List open work orders
+      parameters:
+        - in: query
+          name: limit
+          schema:
+            type: integer
+        - in: query
+          name: offset
+          schema:
+            type: integer
+        - in: query
+          name: dateFrom
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: dateTo
+          schema:
+            type: string
+            format: date
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Invalid parameters
+  /api/dashboard/kpis/:
+    get:
+      summary: Retrieve KPIs
+      responses:
+        '200':
+          description: OK
 components:
   schemas:
     AssetInput:
