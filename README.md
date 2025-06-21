@@ -26,7 +26,7 @@ python manage.py runserver
 ## Lint and Test
 
 ```bash
-ruff check .
+ruff check . --select F,E,I
 pytest
 ```
 
