@@ -5,7 +5,7 @@ pytestmark = pytest.mark.django_db
 
 
 def test_create_and_list_equipment(client):
-    url = reverse('equipment-list')
+    url = reverse('equipment:equipment-list')
     data = {
         'name': 'AC 01',
         'description': 'Ar condicionado da sala',
