@@ -5,6 +5,7 @@ from typing import List
 from uuid import uuid4
 
 from traknor.domain.work_order import WorkOrder, WorkOrderHistory
+from traknor.domain.constants import WorkOrderStatus
 from traknor.infrastructure.accounts.user import User
 from traknor.infrastructure.models.work_order_history import (
     WorkOrderHistory as WorkOrderHistoryModel,
@@ -25,6 +26,8 @@ def _to_domain(obj: WorkOrderModel) -> WorkOrder:
         created_by_id=obj.created_by_id,
         description=obj.description,
         cost=float(obj.cost),
+        revision=obj.revision,
+        deleted_at=obj.deleted_at,
     )
 
 
@@ -42,7 +45,7 @@ def _history_to_domain(obj: WorkOrderHistoryModel) -> WorkOrderHistory:
 def create(data: dict) -> WorkOrder:
     obj = WorkOrderModel.objects.create(
         code=uuid4(),
-        status="Aberta",
+        status=WorkOrderStatus.OPEN.value,
         **data,
     )
     return _to_domain(obj)
@@ -72,7 +75,8 @@ def update_status(work_order_id: int, new_status: str, changed_by: User) -> Work
 
 
 def list_by_filter(
-    *, status: str | None = None,
+    *,
+    status: str | None = None,
     equipment_location: str | None = None,
     start_date: date | None = None,
     end_date: date | None = None,
@@ -92,9 +96,9 @@ def list_by_filter(
 
 
 def list_history(work_order_id: int) -> List[WorkOrderHistory]:
-    qs = WorkOrderHistoryModel.objects.filter(
-        work_order_id=work_order_id
-    ).order_by("-changed_at")
+    qs = WorkOrderHistoryModel.objects.filter(work_order_id=work_order_id).order_by(
+        "-changed_at"
+    )
     return [_history_to_domain(obj) for obj in qs]
 
 
@@ -126,3 +130,54 @@ def execute(work_order_id: int, assignee: User) -> WorkOrder:
         send_work_order_completed(obj)
     obj.save()
     return _to_domain(obj)
+
+
+class ConcurrencyError(Exception):
+    """Raised when revision check fails."""
+
+
+class InvalidTransitionError(Exception):
+    """Raised when an invalid status transition is attempted."""
+
+
+class WorkOrderService:
+    """Service for work order state transitions."""
+
+    _valid_transitions = {
+        WorkOrderStatus.OPEN: {
+            WorkOrderStatus.IN_PROGRESS,
+            WorkOrderStatus.WAITING,
+            WorkOrderStatus.DONE,
+        },
+        WorkOrderStatus.IN_PROGRESS: {WorkOrderStatus.WAITING, WorkOrderStatus.DONE},
+        WorkOrderStatus.WAITING: {WorkOrderStatus.IN_PROGRESS, WorkOrderStatus.DONE},
+    }
+
+    def change_status(
+        self,
+        wo: WorkOrderModel,
+        target: WorkOrderStatus,
+        actor: User,
+        expected_revision: int,
+    ) -> WorkOrder:
+        """Change status with optimistic locking and audit."""
+
+        if wo.revision != expected_revision:
+            raise ConcurrencyError()
+        if target not in self._valid_transitions.get(WorkOrderStatus(wo.status), set()):
+            raise InvalidTransitionError()
+
+        prev_status = wo.status
+        wo.status = target.value
+        wo.revision += 1
+        wo.save(update_fields=["status", "revision"])
+        WorkOrderHistoryModel.objects.create(
+            work_order=wo,
+            old_status=prev_status,
+            new_status=wo.status,
+            changed_by=actor,
+        )
+        return _to_domain(wo)
+
+
+work_order_state_machine = WorkOrderService()
