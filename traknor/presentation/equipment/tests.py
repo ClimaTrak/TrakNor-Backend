@@ -5,7 +5,7 @@ pytestmark = pytest.mark.django_db
 
 
 def test_create_and_list_equipment(client):
-    url = reverse('equipment:equipment-list')
+    url = reverse('equipment-list')
     data = {
         'name': 'AC 01',
         'description': 'Ar condicionado da sala',
@@ -26,7 +26,7 @@ def _upload_csv(client, content: str):
     from django.core.files.uploadedfile import SimpleUploadedFile
 
     file = SimpleUploadedFile("eq.csv", content.encode("utf-8"), content_type="text/csv")
-    url = reverse("equipment:equipment-import")
+    url = reverse("equipment-import")
     return client.post(url, {"file": file})
 
 

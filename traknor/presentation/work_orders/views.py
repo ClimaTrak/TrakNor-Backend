@@ -1,8 +1,12 @@
 from rest_framework import viewsets
 from rest_framework.response import Response
+from rest_framework.decorators import action
 
 from traknor.application.services import work_order_service
 from traknor.infrastructure.work_orders.serializers import WorkOrderSerializer
+from traknor.infrastructure.work_orders.work_order_history_serializer import (
+    WorkOrderHistorySerializer,
+)
 
 
 class WorkOrderViewSet(viewsets.ViewSet):
@@ -32,5 +36,13 @@ class WorkOrderViewSet(viewsets.ViewSet):
     def update(self, request, pk=None):
         serializer = WorkOrderSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        wo = work_order_service.update_status(int(pk), serializer.validated_data["status"])
+        wo = work_order_service.update_status(
+            int(pk), serializer.validated_data["status"], request.user
+        )
         return Response(wo.__dict__)
+
+    @action(detail=True, methods=["get"])
+    def history(self, request, pk=None):
+        history = work_order_service.list_history(int(pk))
+        serializer = WorkOrderHistorySerializer(history, many=True)
+        return Response(serializer.data)
