@@ -4,3 +4,12 @@ line-length = 88
 
 [tool.ruff.lint]
 ignore = ["I001"]
+
+[tool.mypy]
+python_version = "3.11"
+strict = false
+ignore_missing_imports = true
+pretty = true
+show_error_codes = true
+allow_untyped_globals = true
+disable_error_code = ["var-annotated"]

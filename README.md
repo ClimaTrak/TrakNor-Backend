@@ -45,6 +45,10 @@ pytest
 ## Build & Quality
 
 [![Coverage](https://img.shields.io/codecov/c/github/ClimaTrak/TrakNor-Backend?label=coverage)](https://codecov.io/gh/ClimaTrak/TrakNor-Backend)
+## Quality Gates
+
+Atualmente o `mypy` roda em modo relaxado (`strict` desabilitado) para liberar o pipeline. Consulte a issue `chore/sbXX-enable-mypy-strict` para acompanhar a reativação.
+
 
 ## API Overview
 
