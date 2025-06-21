@@ -6,7 +6,7 @@ from traknor.infrastructure.work_orders.serializers import WorkOrderSerializer
 
 
 class WorkOrderViewSet(viewsets.ViewSet):
-    """CRUD interface for work orders."""
+    """Interface de listagem, criação, visualização e atualização de ordens de serviço. (sem exclusão)"""
 
     def list(self, request):
         work_orders = work_order_service.list_by_filter(
