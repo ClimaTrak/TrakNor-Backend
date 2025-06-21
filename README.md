@@ -42,6 +42,10 @@ ruff check . --select F,E,I
 pytest
 ```
 
+## Build & Quality
+
+[![Coverage](https://img.shields.io/codecov/c/github/ClimaTrak/TrakNor-Backend?label=coverage)](https://codecov.io/gh/ClimaTrak/TrakNor-Backend)
+
 ## API Overview
 
 - `/api/auth/` – JWT authentication (login, refresh, register).

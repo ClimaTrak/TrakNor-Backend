@@ -23,7 +23,7 @@ def _wo(closed: date, opened: date | None = None) -> WorkOrder:
     )
 
 
-def test_calc_mttr():
+def test_calc_mttr() -> None:
     base = date(2025, 6, 1)
     wos = [
         _wo(base + timedelta(days=1), base),
@@ -32,7 +32,7 @@ def test_calc_mttr():
     assert _calc_mttr(wos) == 24.0
 
 
-def test_calc_mtbf():
+def test_calc_mtbf() -> None:
     base = date(2025, 6, 1)
     wos = [
         _wo(base + timedelta(days=2)),

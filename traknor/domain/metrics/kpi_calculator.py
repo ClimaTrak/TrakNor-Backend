@@ -31,13 +31,16 @@ class KPIResult:
 
 
 def _calc_mtbf(workorders: Iterable[WorkOrder], start: date) -> float:
-    closed = [w for w in workorders if w.completed_date]
+    """Mean time between failures in hours."""
+
+    closed: List[WorkOrder] = [w for w in workorders if w.completed_date]
     if not closed:
         return 0.0
-    closed.sort(key=lambda w: w.completed_date)
+    closed.sort(key=lambda w: w.completed_date or start)
     prev = start
     spans: List[float] = []
     for wo in closed:
+        assert wo.completed_date is not None
         spans.append((wo.completed_date - prev).total_seconds() / 3600)
         prev = wo.completed_date
     return sum(spans) / len(spans)

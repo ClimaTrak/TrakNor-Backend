@@ -9,17 +9,17 @@ from traknor.infrastructure.accounts.user import User
 from traknor.infrastructure.equipment.models import EquipmentModel
 
 
-class WorkOrderQuerySet(models.QuerySet):
+class WorkOrderQuerySet(models.QuerySet["WorkOrder"]):
     """Custom queryset with helpers for soft delete."""
 
-    def alive(self) -> models.QuerySet:
+    def alive(self) -> models.QuerySet["WorkOrder"]:
         return self.filter(deleted_at__isnull=True)
 
-    def deleted(self) -> models.QuerySet:
+    def deleted(self) -> models.QuerySet["WorkOrder"]:
         return self.exclude(deleted_at__isnull=True)
 
 
-class WorkOrderManager(models.Manager):
+class WorkOrderManager(models.Manager["WorkOrder"]):
     """Manager applying the alive filter by default."""
 
     def get_queryset(self) -> WorkOrderQuerySet:  # type: ignore[override]

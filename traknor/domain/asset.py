@@ -9,5 +9,5 @@ class Asset:
     name: str
     tag: str
     model_id: int
-    location: dict
+    location: dict[str, str]
     created_at: datetime
