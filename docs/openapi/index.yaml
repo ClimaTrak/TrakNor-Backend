@@ -3,6 +3,14 @@ info:
   title: TrakNor API
   version: "1.0"
 paths:
-  $ref: './asset.yaml#/paths'
+  <<: { $ref: './asset.yaml#/paths' }
+  <<: { $ref: './workorder.yaml#/paths' }
+  <<: { $ref: './pmoc.yaml#/paths' }
+  <<: { $ref: './auth.yaml#/paths' }
+  <<: { $ref: './dashboard.yaml#/paths' }
 components:
-  $ref: './asset.yaml#/components'
+  <<: { $ref: './asset.yaml#/components' }
+  <<: { $ref: './workorder.yaml#/components' }
+  <<: { $ref: './pmoc.yaml#/components' }
+  <<: { $ref: './auth.yaml#/components' }
+  <<: { $ref: './dashboard.yaml#/components' }

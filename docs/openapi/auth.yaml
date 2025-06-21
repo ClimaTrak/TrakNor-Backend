@@ -1,0 +1,26 @@
+openapi: 3.1.0
+info:
+  title: TrakNor API – Auth
+  version: "1.0"
+paths:
+  /api/accounts/login/:
+    post:
+      summary: Login user
+      tags: [Auth]
+      responses:
+        "200":
+          description: Tokens issued
+  /api/accounts/refresh/:
+    post:
+      summary: Refresh token
+      tags: [Auth]
+      responses:
+        "200":
+          description: Token refreshed
+  /api/accounts/register/:
+    post:
+      summary: Register user
+      tags: [Auth]
+      responses:
+        "201":
+          description: Created

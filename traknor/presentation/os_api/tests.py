@@ -123,3 +123,19 @@ def test_open_orders_list(client):
     resp = client.get(url + "?limit=1&offset=0", **headers)
     assert resp.status_code == 200
     assert len(resp.json()) == 1
+
+
+def test_serializer_fields(client):
+    user = _create_user()
+    equip = _create_equipment()
+    _create_work_order(user, equip, date.today())
+
+    headers = _auth_headers(client)
+    resp = client.get(reverse("os_api:list") + "?assignee=me&date=today", **headers)
+    item = resp.json()[0]
+    assert set(item.keys()) == {"id", "number", "status", "description", "assignee"}
+
+    resp = client.get(reverse("os_api:open"), **headers)
+    if resp.json():
+        item = resp.json()[0]
+        assert set(item.keys()) == {"id", "number", "status", "description", "assignee"}

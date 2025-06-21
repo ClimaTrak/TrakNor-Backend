@@ -1,0 +1,12 @@
+openapi: 3.1.0
+info:
+  title: TrakNor API – PMOC
+  version: "1.0"
+paths:
+  /api/pmoc/generate/:
+    post:
+      summary: Generate PMOC schedule
+      tags: [PMOC]
+      responses:
+        "201":
+          description: Created

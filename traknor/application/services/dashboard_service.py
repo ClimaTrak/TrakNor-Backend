@@ -5,8 +5,12 @@ from traknor.infrastructure.work_orders.models import WorkOrder
 
 
 def get_kpis() -> dict:
+    one_year_ago = date.today() - timedelta(days=365)
     done_qs = WorkOrder.objects.filter(
-        status="Concluída", completed_date__isnull=False, scheduled_date__isnull=False
+        status="Concluída",
+        completed_date__isnull=False,
+        scheduled_date__isnull=False,
+        completed_date__gte=one_year_ago,
     )
     open_orders = WorkOrder.objects.exclude(status="Concluída").count()
     if done_qs.exists():
@@ -14,9 +18,13 @@ def get_kpis() -> dict:
             (wo.completed_date - wo.scheduled_date).days for wo in done_qs
         )
         mttr = total_duration / done_qs.count()
+        first = done_qs.order_by("completed_date").first().completed_date
+        last = done_qs.order_by("-completed_date").first().completed_date
+        total_time = (last - first).days or 0
+        mtbf = total_time / done_qs.count()
     else:
         mttr = 0
-    mtbf = 0
+        mtbf = 0
     total_orders = WorkOrder.objects.count()
     preventive_ratio = done_qs.count() / total_orders if total_orders else 0
     return {
