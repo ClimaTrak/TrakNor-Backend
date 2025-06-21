@@ -1,0 +1,8 @@
+openapi: 3.1.0
+info:
+  title: TrakNor API
+  version: "1.0"
+paths:
+  $ref: './asset.yaml#/paths'
+components:
+  $ref: './asset.yaml#/components'
