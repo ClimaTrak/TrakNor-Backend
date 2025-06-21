@@ -27,11 +27,14 @@ INSTALLED_APPS = [
     "traknor.infrastructure.equipment",
     "traknor.infrastructure.assets",
     "traknor.infrastructure.work_orders",
+    "traknor.infrastructure.pmoc.apps.PmocInfraConfig",
     "traknor.presentation.accounts",
     "traknor.presentation.equipment",
     "traknor.presentation.assets",
     "traknor.presentation.dashboard",
     "traknor.presentation.work_orders",
+    "traknor.presentation.pmoc",
+    "traknor.presentation.os_api",
 ]
 
 MIDDLEWARE = [

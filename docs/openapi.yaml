@@ -32,6 +32,64 @@ paths:
                   error:
                     type: string
                     example: TAG exists
+  /api/pmoc/generate/:
+    post:
+      summary: Generate PMOC schedule
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PmocGenerateInput'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  schedule:
+                    type: array
+                    items:
+                      type: string
+                      format: date
+        '404':
+          description: Asset not found
+  /api/os/:
+    get:
+      summary: List today's work orders
+      parameters:
+        - in: query
+          name: assignee
+          schema:
+            type: string
+        - in: query
+          name: date
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    number:
+                      type: string
+                    status:
+                      type: string
+                    description:
+                      type: string
+                    assignee:
+                      type: integer
+        '400':
+          description: Invalid parameters
 components:
   schemas:
     AssetInput:
@@ -47,3 +105,14 @@ components:
           type: integer
         location:
           type: object
+    PmocGenerateInput:
+      type: object
+      required: [assetId, frequency]
+      properties:
+        assetId:
+          type: string
+        frequency:
+          type: string
+        startDate:
+          type: string
+          format: date

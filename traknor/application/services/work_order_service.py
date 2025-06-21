@@ -92,3 +92,10 @@ def list_history(work_order_id: int) -> List[WorkOrderHistory]:
         work_order_id=work_order_id
     ).order_by("-changed_at")
     return [_history_to_domain(obj) for obj in qs]
+
+
+def list_today(user_id: int, target_date: date) -> List[WorkOrder]:
+    qs = WorkOrderModel.objects.filter(
+        created_by_id=user_id, scheduled_date=target_date
+    )
+    return [_to_domain(obj) for obj in qs]
