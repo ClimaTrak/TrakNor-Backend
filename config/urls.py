@@ -10,4 +10,5 @@ urlpatterns = [
     path("api/dashboard/", include("traknor.presentation.dashboard.urls")),
     path("api/pmoc/", include("traknor.presentation.pmoc.urls")),
     path("api/os/", include("traknor.presentation.os_api.urls")),
+    path("api/reports/", include("traknor.presentation.reports.urls")),
 ]

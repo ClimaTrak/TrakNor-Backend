@@ -8,6 +8,7 @@ paths:
   <<: { $ref: './pmoc.yaml#/paths' }
   <<: { $ref: './auth.yaml#/paths' }
   <<: { $ref: './dashboard.yaml#/paths' }
+  <<: { $ref: './report.yaml#/paths' }
 components:
   <<: { $ref: './asset.yaml#/components' }
   <<: { $ref: './workorder.yaml#/components' }
