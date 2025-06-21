@@ -4,8 +4,12 @@ from datetime import date
 from uuid import uuid4
 from typing import List
 
-from traknor.domain.work_order import WorkOrder
+from traknor.domain.work_order import WorkOrder, WorkOrderHistory
 from traknor.infrastructure.work_orders.models import WorkOrder as WorkOrderModel
+from traknor.infrastructure.models.work_order_history import (
+    WorkOrderHistory as WorkOrderHistoryModel,
+)
+from traknor.infrastructure.accounts.user import User
 
 
 def _to_domain(obj: WorkOrderModel) -> WorkOrder:
@@ -23,6 +27,17 @@ def _to_domain(obj: WorkOrderModel) -> WorkOrder:
     )
 
 
+def _history_to_domain(obj: WorkOrderHistoryModel) -> WorkOrderHistory:
+    return WorkOrderHistory(
+        id=obj.id,
+        work_order_id=obj.work_order_id,
+        old_status=obj.old_status,
+        new_status=obj.new_status,
+        changed_by_id=obj.changed_by_id,
+        changed_at=obj.changed_at,
+    )
+
+
 def create(data: dict) -> WorkOrder:
     obj = WorkOrderModel.objects.create(
         code=uuid4(),
@@ -32,11 +47,17 @@ def create(data: dict) -> WorkOrder:
     return _to_domain(obj)
 
 
-def update_status(work_order_id: int, new_status: str) -> WorkOrder:
+def update_status(work_order_id: int, new_status: str, changed_by: User) -> WorkOrder:
     obj = WorkOrderModel.objects.get(id=work_order_id)
     valid = {"Aberta": "Em Execução", "Em Execução": "Concluída"}
     if valid.get(obj.status) != new_status:
         raise ValueError("Invalid status transition")
+    WorkOrderHistoryModel.objects.create(
+        work_order=obj,
+        old_status=obj.status,
+        new_status=new_status,
+        changed_by=changed_by,
+    )
     obj.status = new_status
     if new_status == "Concluída" and obj.completed_date is None:
         obj.completed_date = date.today()
@@ -62,3 +83,10 @@ def list_by_filter(
     elif end_date:
         qs = qs.filter(scheduled_date__lte=end_date)
     return [_to_domain(obj) for obj in qs]
+
+
+def list_history(work_order_id: int) -> List[WorkOrderHistory]:
+    qs = WorkOrderHistoryModel.objects.filter(
+        work_order_id=work_order_id
+    ).order_by("-changed_at")
+    return [_history_to_domain(obj) for obj in qs]
