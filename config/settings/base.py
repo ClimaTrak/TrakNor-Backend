@@ -24,6 +24,8 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "rest_framework",
     "rest_framework_simplejwt",
+    "drf_spectacular",
+    "drf_spectacular_sidecar",
     "traknor.infrastructure.accounts.apps.AccountsInfraConfig",
     "traknor.infrastructure.equipment",
     "traknor.infrastructure.assets",
@@ -76,6 +78,7 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 }
 
 AUTH_PASSWORD_VALIDATORS = []
@@ -87,3 +90,14 @@ USE_TZ = True
 
 STATIC_URL = "/static/"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+SPECTACULAR_SETTINGS = {
+    "TITLE": "TrakNor API",
+    "DESCRIPTION": "CMMS & IoT maintenance platform",
+    "VERSION": "0.7.0",
+    "SERVE_INCLUDE_SCHEMA": False,
+    "SCHEMA_PATH_PREFIX": r"/api/",
+    "COMPONENT_SPLIT_REQUEST": True,
+    "SCHEMA_COERCE_PATH_PK": True,
+    "SWAGGER_UI_SETTINGS": {"persistAuthorization": True},
+}
