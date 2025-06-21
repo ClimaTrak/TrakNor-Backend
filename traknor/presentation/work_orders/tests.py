@@ -66,7 +66,9 @@ def test_status_transitions():
     assert wo.status == WorkOrderStatus.OPEN.value
     wo = work_order_service.update_status(wo.id, WorkOrderStatus.WAITING.value, user)
     assert wo.status == WorkOrderStatus.WAITING.value
-    wo = work_order_service.update_status(wo.id, WorkOrderStatus.IN_PROGRESS.value, user)
+    wo = work_order_service.update_status(
+        wo.id, WorkOrderStatus.IN_PROGRESS.value, user
+    )
     assert wo.status == WorkOrderStatus.IN_PROGRESS.value
     wo = work_order_service.update_status(wo.id, WorkOrderStatus.DONE.value, user)
     assert wo.status == WorkOrderStatus.DONE.value

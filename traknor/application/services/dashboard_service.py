@@ -68,7 +68,9 @@ def get_dashboard_summary() -> dict:
     last_30 = today - timedelta(days=30)
 
     total_equipment = EquipmentModel.objects.count()
-    open_work_orders = WorkOrder.objects.exclude(status=WorkOrderStatus.DONE.value).count()
+    open_work_orders = WorkOrder.objects.exclude(
+        status=WorkOrderStatus.DONE.value
+    ).count()
     work_orders_last_30_days = WorkOrder.objects.filter(
         scheduled_date__gte=last_30
     ).count()

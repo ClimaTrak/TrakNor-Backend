@@ -10,5 +10,3 @@ router.register(r"", WorkOrderViewSet, basename="workorder")
 urlpatterns = [
     path("", include(router.urls)),
 ]
-
-
