@@ -20,11 +20,15 @@ jobs:
             ${{ runner.os }}-pip-
       - name: Install requirements
         run: python -m pip install -r requirements.txt
+      - name: Generate & validate OpenAPI
+        run: |
+          python manage.py spectacular --file schema/openapi.json
+          python -m drf_spectacular --validate schema/openapi.json
       - name: Run migrations
         run: python manage.py migrate --noinput
         env:
           DJANGO_SETTINGS_MODULE: config.settings.ci
-      - name: Run tests
+      - name: Run tests (inclui coverage do esquema)
         run: pytest
       - name: Run Ruff
         run: ruff check . --select F,E,I
