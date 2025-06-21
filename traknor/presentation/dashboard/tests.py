@@ -88,3 +88,28 @@ def test_kpi_endpoint(client):
     assert resp.status_code == 200
     data = resp.json()
     assert "openOrders" in data
+
+
+def test_mtbf_calculation(client):
+    user = _create_user()
+    equip = _create_equipment()
+    for days in (100, 50, 10):
+        wo = _create_work_order(user, equip, "Concluída", days_ago=days)
+        wo.completed_date = date.today() - timedelta(days=days)
+        wo.scheduled_date = wo.completed_date - timedelta(days=1)
+        wo.save()
+
+    login_resp = client.post(
+        reverse("accounts:login"),
+        {"email": "user@example.com", "password": "pass"},
+        content_type="application/json",
+    )
+    token = login_resp.json()["access"]
+
+    resp = client.get(reverse("dashboard:kpis"), HTTP_AUTHORIZATION=f"Bearer {token}")
+    assert resp.status_code == 200
+    data = resp.json()
+    first = date.today() - timedelta(days=100)
+    last = date.today() - timedelta(days=10)
+    expected = (last - first).days / 3
+    assert data["mtbf"] == expected

@@ -27,3 +27,19 @@ class WorkOrderStatusSerializer(serializers.ModelSerializer):
     class Meta:
         model = WorkOrder
         fields = ["status"]
+
+
+class WorkOrderSerializerList(serializers.Serializer):
+    """Serializer for work order listings."""
+
+    id = serializers.IntegerField()
+    number = serializers.CharField(source="code")
+    status = serializers.CharField()
+    description = serializers.CharField()
+    assignee = serializers.IntegerField(source="created_by_id")
+
+
+class WorkOrderSerializerOpen(WorkOrderSerializerList):
+    """Serializer for open work order listings."""
+
+    pass

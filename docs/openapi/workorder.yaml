@@ -1,0 +1,26 @@
+openapi: 3.1.0
+info:
+  title: TrakNor API – WorkOrders
+  version: "1.0"
+paths:
+  /api/os/:
+    get:
+      summary: List today's work orders
+      tags: [WorkOrders]
+      responses:
+        "200":
+          description: OK
+  /api/os/{id}/execute/:
+    patch:
+      summary: Execute work order
+      tags: [WorkOrders]
+      responses:
+        "200":
+          description: OK
+  /api/os/open/:
+    get:
+      summary: List open work orders
+      tags: [WorkOrders]
+      responses:
+        "200":
+          description: OK

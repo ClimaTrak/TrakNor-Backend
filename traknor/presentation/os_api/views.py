@@ -10,6 +10,10 @@ from traknor.application.services import (
     work_order_service,
 )
 from traknor.infrastructure.work_orders.models import WorkOrder as WorkOrderModel
+from traknor.infrastructure.work_orders.serializers import (
+    WorkOrderSerializerList,
+    WorkOrderSerializerOpen,
+)
 
 
 class OsListView(APIView):
@@ -38,17 +42,8 @@ class OsListView(APIView):
                 return Response({"error": "Invalid date"}, status=400)
 
         orders = list_today_orders(user_id, target_date)
-        data = [
-            {
-                "id": wo.id,
-                "number": str(wo.code),
-                "status": wo.status,
-                "description": wo.description,
-                "assignee": wo.created_by_id,
-            }
-            for wo in orders
-        ]
-        return Response(data)
+        serializer = WorkOrderSerializerList(orders, many=True)
+        return Response(serializer.data)
 
 
 class OpenOrdersListView(APIView):
@@ -74,17 +69,8 @@ class OpenOrdersListView(APIView):
             status="Aberta", start_date=date_from, end_date=date_to
         )
         subset = orders[offset : offset + limit]
-        data = [
-            {
-                "id": wo.id,
-                "number": str(wo.code),
-                "status": wo.status,
-                "description": wo.description,
-                "assignee": wo.created_by_id,
-            }
-            for wo in subset
-        ]
-        return Response(data)
+        serializer = WorkOrderSerializerOpen(subset, many=True)
+        return Response(serializer.data)
 
 
 class OsExecuteView(APIView):

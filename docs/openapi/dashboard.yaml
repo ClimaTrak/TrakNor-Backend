@@ -1,0 +1,12 @@
+openapi: 3.1.0
+info:
+  title: TrakNor API – Dashboard
+  version: "1.0"
+paths:
+  /api/dashboard/kpis/:
+    get:
+      summary: Retrieve KPIs
+      tags: [Dashboard]
+      responses:
+        "200":
+          description: OK
