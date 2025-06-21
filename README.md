@@ -1,17 +1,38 @@
 # TrakNor Backend
 
-Django 4.2 project following Clean Architecture.
+Django 4.2 project structured with Clean Architecture. The core layers are:
+
+- **domain** – pure business entities (dataclasses).
+- **application** – services with business logic.
+- **infrastructure** – Django models and serializers.
+- **presentation** – API views and URL routes.
 
 ## Setup
 
 ```bash
 cp .env.example .env
-make setup
+python -m venv venv
+. venv/bin/activate
+pip install -r requirements.txt
+python manage.py migrate
+```
+
+## Running
+
+```bash
+python manage.py runserver
 ```
 
 ## Lint and Test
 
 ```bash
-make lint
-make test
+ruff check .
+pytest
 ```
+
+## API Overview
+
+- `/api/auth/` – JWT authentication (login, refresh, register).
+- `/api/equipment/` – list and create equipment. Supports CSV import via `/import/`.
+- `/api/work-orders/` – manage work orders and view history.
+- `/api/dashboard/summary/` – dashboard metrics.
