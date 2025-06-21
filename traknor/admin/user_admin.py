@@ -3,7 +3,8 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 
-from traknor.infrastructure.models.user import User
+# Use the user model defined in the accounts infrastructure package.
+from traknor.infrastructure.accounts.user import User
 
 
 @admin.register(User)
