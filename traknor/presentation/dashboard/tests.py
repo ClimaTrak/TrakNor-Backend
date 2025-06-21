@@ -17,7 +17,7 @@ def _create_user():
         password="pass",
         first_name="Test",
         last_name="User",
-        role="TECH",
+        role="technician",
     )
 
 

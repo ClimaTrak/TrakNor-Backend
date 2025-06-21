@@ -10,7 +10,7 @@ def _register_user(client, email="user@example.com", password="pass1234"):
         "email": email,
         "first_name": "Test",
         "last_name": "User",
-        "role": "CLIENT",
+        "role": "technician",
         "password": password,
     }
     return client.post(url, data, content_type="application/json")

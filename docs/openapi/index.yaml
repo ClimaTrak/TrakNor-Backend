@@ -9,9 +9,11 @@ paths:
   <<: { $ref: './auth.yaml#/paths' }
   <<: { $ref: './dashboard.yaml#/paths' }
   <<: { $ref: './report.yaml#/paths' }
+  <<: { $ref: './profile.yaml#/paths' }
 components:
   <<: { $ref: './asset.yaml#/components' }
   <<: { $ref: './workorder.yaml#/components' }
   <<: { $ref: './pmoc.yaml#/components' }
   <<: { $ref: './auth.yaml#/components' }
   <<: { $ref: './dashboard.yaml#/components' }
+  <<: { $ref: './profile.yaml#/components' }

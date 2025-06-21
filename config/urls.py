@@ -5,6 +5,7 @@ from drf_spectacular.views import (
     SpectacularRedocView,
     SpectacularSwaggerView,
 )
+import traknor.presentation.profile
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -16,6 +17,11 @@ urlpatterns = [
     path("api/pmoc/", include("traknor.presentation.pmoc.urls")),
     path("api/os/", include("traknor.presentation.os_api.urls")),
     path("api/reports/", include("traknor.presentation.reports.urls")),
+    path(
+        "api/profile/",
+        traknor.presentation.profile.ProfileView.as_view(),
+        name="profile",
+    ),
     path("schema/", SpectacularAPIView.as_view(), name="schema-json"),
     path("schema.yaml", SpectacularAPIView.as_view()),
     path(

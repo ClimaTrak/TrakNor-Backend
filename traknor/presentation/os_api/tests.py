@@ -17,7 +17,7 @@ def _create_user():
         password="pass",
         first_name="Tech",
         last_name="User",
-        role="TECH",
+        role="technician",
     )
 
 
@@ -100,7 +100,7 @@ def test_execute_forbidden(client):
         password="pass",
         first_name="O",
         last_name="U",
-        role="TECH",
+        role="technician",
     )
     equip = _create_equipment()
     wo = _create_work_order(other, equip, date.today())

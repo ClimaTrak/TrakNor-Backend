@@ -27,6 +27,7 @@ INSTALLED_APPS = [
     "drf_spectacular",
     "drf_spectacular_sidecar",
     "traknor.infrastructure.accounts.apps.AccountsInfraConfig",
+    "traknor.infrastructure.audit.apps.AuditInfraConfig",
     "traknor.infrastructure.equipment",
     "traknor.infrastructure.assets",
     "traknor.infrastructure.work_orders",
@@ -46,6 +47,7 @@ MIDDLEWARE = [
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "traknor.middleware.audit_middleware.AuditMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
