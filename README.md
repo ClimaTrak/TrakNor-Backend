@@ -12,6 +12,9 @@ Django 4.2 project structured with Clean Architecture. The core layers are:
 ```bash
 cp .env.example .env
 # adjust DEBUG and ALLOWED_HOSTS as needed
+
+# Optional: enable SQLite fallback
+# echo "DATABASE_URL=sqlite:///db.sqlite3" >> .env
 python -m venv venv
 . venv/bin/activate
 pip install -r requirements.txt
