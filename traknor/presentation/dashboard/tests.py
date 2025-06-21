@@ -83,11 +83,13 @@ def test_kpi_endpoint(client):
     token = login_resp.json()["access"]
 
     resp = client.get(
-        reverse("dashboard:kpis"), HTTP_AUTHORIZATION=f"Bearer {token}"
+        reverse("dashboard:kpis"),
+        HTTP_AUTHORIZATION=f"Bearer {token}",
+        data={"from": str(date.today() - timedelta(days=120)), "to": str(date.today())},
     )
     assert resp.status_code == 200
     data = resp.json()
-    assert "openOrders" in data
+    assert "open_workorders" in data
 
 
 def test_mtbf_calculation(client):
