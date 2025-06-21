@@ -1,38 +1,65 @@
+from __future__ import annotations
+
 from datetime import date, timedelta
 
+from traknor.application.services.work_order_service import _to_domain
+from traknor.domain.metrics.kpi_calculator import compute
 from traknor.infrastructure.equipment.models import EquipmentModel
 from traknor.infrastructure.work_orders.models import WorkOrder
 
 
-def get_kpis() -> dict:
-    one_year_ago = date.today() - timedelta(days=365)
-    done_qs = WorkOrder.objects.filter(
+def get_kpis(
+    *,
+    range_from: date | None = None,
+    range_to: date | None = None,
+    equipment_id: int | None = None,
+    group_by: str | None = None,
+) -> dict:
+    """Return KPI metrics for the given filters."""
+
+    if range_from is None:
+        range_from = date.today().replace(day=1)
+    if range_to is None:
+        range_to = date.today()
+
+    closed_qs = WorkOrder.objects.filter(
         status="Concluída",
         completed_date__isnull=False,
-        scheduled_date__isnull=False,
-        completed_date__gte=one_year_ago,
+        completed_date__range=(range_from, range_to),
     )
-    open_orders = WorkOrder.objects.exclude(status="Concluída").count()
-    if done_qs.exists():
-        total_duration = sum(
-            (wo.completed_date - wo.scheduled_date).days for wo in done_qs
-        )
-        mttr = total_duration / done_qs.count()
-        first = done_qs.order_by("completed_date").first().completed_date
-        last = done_qs.order_by("-completed_date").first().completed_date
-        total_time = (last - first).days or 0
-        mtbf = total_time / done_qs.count()
-    else:
-        mttr = 0
-        mtbf = 0
-    total_orders = WorkOrder.objects.count()
-    preventive_ratio = done_qs.count() / total_orders if total_orders else 0
-    return {
-        "mttr": mttr,
-        "mtbf": mtbf,
-        "openOrders": open_orders,
-        "preventiveRatio": preventive_ratio,
+    if equipment_id:
+        closed_qs = closed_qs.filter(equipment_id=equipment_id)
+
+    workorders = [_to_domain(obj) for obj in closed_qs]
+    open_count = WorkOrder.objects.exclude(status="Concluída").count()
+    closed_count = closed_qs.count()
+
+    result = compute(
+        workorders,
+        range_from,
+        range_to,
+        group_by=group_by,
+        open_count=open_count,
+        closed_count=closed_count,
+    )
+
+    data = {
+        "range": {"from": str(result.range_from), "to": str(result.range_to)},
+        "mtbf": result.mtbf,
+        "mttr": result.mttr,
+        "open_workorders": result.open_workorders,
+        "closed_workorders": result.closed_workorders,
     }
+
+    if result.series:
+        data["series"] = {
+            "labels": result.series.labels,
+            "mtbf": result.series.mtbf,
+            "mttr": result.series.mttr,
+            "closed": result.series.closed,
+        }
+
+    return data
 
 
 def get_dashboard_summary() -> dict:
