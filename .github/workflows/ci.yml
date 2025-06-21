@@ -27,4 +27,4 @@ jobs:
       - name: Run tests
         run: pytest
       - name: Run Ruff
-        run: ruff . --select F,E,I
+        run: ruff check . --select F,E,I
