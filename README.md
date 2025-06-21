@@ -44,6 +44,8 @@ pytest
 - `/api/auth/` – JWT authentication (login, refresh, register).
 - `/api/equipment/` – list and create equipment. Supports CSV import via `/import/` endpoint.
 - `/api/work-orders/` – manage work orders and view history.
+- `/api/work-orders/{id}/status/` – change work order status with revision check.
+- Deleting a work order performs a soft delete.
 - `/api/dashboard/summary/` – dashboard metrics.
 - `/api/reports/` – generate PDF or Excel equipment/work order reports.
 
