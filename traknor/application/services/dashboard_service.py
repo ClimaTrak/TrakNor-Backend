@@ -6,6 +6,7 @@ from traknor.application.services.work_order_service import _to_domain
 from traknor.domain.metrics.kpi_calculator import compute
 from traknor.infrastructure.equipment.models import EquipmentModel
 from traknor.infrastructure.work_orders.models import WorkOrder
+from traknor.domain.constants import WorkOrderStatus
 
 
 def get_kpis(
@@ -23,7 +24,7 @@ def get_kpis(
         range_to = date.today()
 
     closed_qs = WorkOrder.objects.filter(
-        status="Concluída",
+        status=WorkOrderStatus.DONE.value,
         completed_date__isnull=False,
         completed_date__range=(range_from, range_to),
     )
@@ -31,7 +32,7 @@ def get_kpis(
         closed_qs = closed_qs.filter(equipment_id=equipment_id)
 
     workorders = [_to_domain(obj) for obj in closed_qs]
-    open_count = WorkOrder.objects.exclude(status="Concluída").count()
+    open_count = WorkOrder.objects.exclude(status=WorkOrderStatus.DONE.value).count()
     closed_count = closed_qs.count()
 
     result = compute(
@@ -67,7 +68,7 @@ def get_dashboard_summary() -> dict:
     last_30 = today - timedelta(days=30)
 
     total_equipment = EquipmentModel.objects.count()
-    open_work_orders = WorkOrder.objects.exclude(status="Concluída").count()
+    open_work_orders = WorkOrder.objects.exclude(status=WorkOrderStatus.DONE.value).count()
     work_orders_last_30_days = WorkOrder.objects.filter(
         scheduled_date__gte=last_30
     ).count()

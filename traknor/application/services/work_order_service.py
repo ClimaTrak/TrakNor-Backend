@@ -52,22 +52,29 @@ def create(data: dict) -> WorkOrder:
 
 
 def update_status(work_order_id: int, new_status: str, changed_by: User) -> WorkOrder:
+    """Update a work order status using :class:`WorkOrderStatus` values."""
+
     obj = WorkOrderModel.objects.get(id=work_order_id)
     valid = {
-        "Aberta": ["Em Execução", "Em Espera"],
-        "Em Espera": ["Em Execução"],
-        "Em Execução": ["Concluída"],
+        WorkOrderStatus.OPEN.value: [
+            WorkOrderStatus.IN_PROGRESS.value,
+            WorkOrderStatus.WAITING.value,
+        ],
+        WorkOrderStatus.WAITING.value: [WorkOrderStatus.IN_PROGRESS.value],
+        WorkOrderStatus.IN_PROGRESS.value: [WorkOrderStatus.DONE.value],
     }
     if new_status not in valid.get(obj.status, []):
         raise ValueError("Invalid status transition")
+
     WorkOrderHistoryModel.objects.create(
         work_order=obj,
         old_status=obj.status,
         new_status=new_status,
         changed_by=changed_by,
     )
+
     obj.status = new_status
-    if new_status == "Concluída" and obj.completed_date is None:
+    if new_status == WorkOrderStatus.DONE.value and obj.completed_date is None:
         obj.completed_date = date.today()
         send_work_order_completed(obj)
     obj.save()
@@ -111,20 +118,21 @@ def list_today(user_id: int, target_date: date) -> List[WorkOrder]:
 
 def execute(work_order_id: int, assignee: User) -> WorkOrder:
     """Finalize a work order execution."""
+
     obj = WorkOrderModel.objects.get(id=work_order_id)
     if obj.created_by_id != assignee.id:
         raise PermissionError("User is not the assignee")
-    if obj.status != "Em Execução":
+    if obj.status != WorkOrderStatus.IN_PROGRESS.value:
         raise ValueError("Work order not in progress")
 
     WorkOrderHistoryModel.objects.create(
         work_order=obj,
         old_status=obj.status,
-        new_status="Concluída",
+        new_status=WorkOrderStatus.DONE.value,
         changed_by=assignee,
     )
 
-    obj.status = "Concluída"
+    obj.status = WorkOrderStatus.DONE.value
     if obj.completed_date is None:
         obj.completed_date = date.today()
         send_work_order_completed(obj)
@@ -147,7 +155,6 @@ class WorkOrderService:
         WorkOrderStatus.OPEN: {
             WorkOrderStatus.IN_PROGRESS,
             WorkOrderStatus.WAITING,
-            WorkOrderStatus.DONE,
         },
         WorkOrderStatus.IN_PROGRESS: {WorkOrderStatus.WAITING, WorkOrderStatus.DONE},
         WorkOrderStatus.WAITING: {WorkOrderStatus.IN_PROGRESS, WorkOrderStatus.DONE},

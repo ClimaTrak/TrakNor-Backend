@@ -6,6 +6,7 @@ from django.urls import reverse
 from traknor.infrastructure.accounts.user import User
 from traknor.infrastructure.equipment.models import EquipmentModel
 from traknor.infrastructure.work_orders.models import WorkOrder
+from traknor.domain.constants import WorkOrderStatus
 
 pytestmark = pytest.mark.django_db
 
@@ -34,7 +35,7 @@ def _create_equipment():
 def _create_work_order(user, equip, sched_date):
     return WorkOrder.objects.create(
         equipment=equip,
-        status="Aberta",
+        status=WorkOrderStatus.OPEN.value,
         priority="Alta",
         scheduled_date=sched_date,
         created_by=user,
@@ -82,14 +83,14 @@ def test_execute_success(client):
     user = _create_user()
     equip = _create_equipment()
     wo = _create_work_order(user, equip, date.today())
-    wo.status = "Em Execução"
+    wo.status = WorkOrderStatus.IN_PROGRESS.value
     wo.save()
 
     headers = _auth_headers(client)
     url = reverse("os_api:execute", args=[wo.id])
     resp = client.patch(url, **headers)
     assert resp.status_code == 200
-    assert resp.json()["status"] == "Concluída"
+    assert resp.json()["status"] == WorkOrderStatus.DONE.value
 
 
 def test_execute_forbidden(client):
@@ -103,7 +104,7 @@ def test_execute_forbidden(client):
     )
     equip = _create_equipment()
     wo = _create_work_order(other, equip, date.today())
-    wo.status = "Em Execução"
+    wo.status = WorkOrderStatus.IN_PROGRESS.value
     wo.save()
 
     headers = _auth_headers(client)

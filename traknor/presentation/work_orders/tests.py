@@ -4,6 +4,7 @@ import pytest
 from rest_framework.test import APIClient
 
 from traknor.application.services import work_order_service
+from traknor.domain.constants import WorkOrderStatus
 from traknor.infrastructure.accounts.user import User
 from traknor.infrastructure.equipment.models import EquipmentModel
 from traknor.infrastructure.models.work_order_history import WorkOrderHistory
@@ -62,24 +63,24 @@ def test_status_transitions():
             "cost": 0,
         }
     )
-    assert wo.status == "Aberta"
-    wo = work_order_service.update_status(wo.id, "Em Espera", user)
-    assert wo.status == "Em Espera"
-    wo = work_order_service.update_status(wo.id, "Em Execução", user)
-    assert wo.status == "Em Execução"
-    wo = work_order_service.update_status(wo.id, "Concluída", user)
-    assert wo.status == "Concluída"
+    assert wo.status == WorkOrderStatus.OPEN.value
+    wo = work_order_service.update_status(wo.id, WorkOrderStatus.WAITING.value, user)
+    assert wo.status == WorkOrderStatus.WAITING.value
+    wo = work_order_service.update_status(wo.id, WorkOrderStatus.IN_PROGRESS.value, user)
+    assert wo.status == WorkOrderStatus.IN_PROGRESS.value
+    wo = work_order_service.update_status(wo.id, WorkOrderStatus.DONE.value, user)
+    assert wo.status == WorkOrderStatus.DONE.value
     with pytest.raises(ValueError):
-        work_order_service.update_status(wo.id, "Aberta", user)
+        work_order_service.update_status(wo.id, WorkOrderStatus.OPEN.value, user)
 
 
 @pytest.mark.parametrize(
     "steps,new_status",
     [
-        ([], "Em Execução"),
-        ([], "Em Espera"),
-        (["Em Espera"], "Em Execução"),
-        (["Em Execução"], "Concluída"),
+        ([], WorkOrderStatus.IN_PROGRESS.value),
+        ([], WorkOrderStatus.WAITING.value),
+        ([WorkOrderStatus.WAITING.value], WorkOrderStatus.IN_PROGRESS.value),
+        ([WorkOrderStatus.IN_PROGRESS.value], WorkOrderStatus.DONE.value),
     ],
 )
 def test_update_status_valid_transitions(steps, new_status):
@@ -103,9 +104,9 @@ def test_update_status_valid_transitions(steps, new_status):
 @pytest.mark.parametrize(
     "steps,new_status",
     [
-        ([], "Concluída"),
-        (["Em Execução"], "Em Espera"),
-        (["Em Espera"], "Concluída"),
+        ([], WorkOrderStatus.DONE.value),
+        ([WorkOrderStatus.IN_PROGRESS.value], WorkOrderStatus.WAITING.value),
+        ([WorkOrderStatus.WAITING.value], WorkOrderStatus.DONE.value),
     ],
 )
 def test_update_status_invalid_transitions(steps, new_status):
@@ -178,7 +179,7 @@ def test_history_record_created():
             "cost": 0,
         }
     )
-    work_order_service.update_status(wo.id, "Em Execução", user)
+    work_order_service.update_status(wo.id, WorkOrderStatus.IN_PROGRESS.value, user)
     assert WorkOrderHistory.objects.filter(work_order_id=wo.id).count() == 1
 
 
@@ -194,15 +195,15 @@ def test_history_endpoint(api_client):
             "cost": 0,
         }
     )
-    work_order_service.update_status(wo.id, "Em Execução", user)
-    work_order_service.update_status(wo.id, "Concluída", user)
+    work_order_service.update_status(wo.id, WorkOrderStatus.IN_PROGRESS.value, user)
+    work_order_service.update_status(wo.id, WorkOrderStatus.DONE.value, user)
 
     response = api_client.get(f"/api/work-orders/{wo.id}/history/")
     assert response.status_code == 200
     data = response.json()
     assert len(data) == 2
-    assert data[0]["new_status"] == "Concluída"
-    assert data[1]["new_status"] == "Em Execução"
+    assert data[0]["new_status"] == WorkOrderStatus.DONE.value
+    assert data[1]["new_status"] == WorkOrderStatus.IN_PROGRESS.value
 
 
 def test_email_sent_on_completion(mailoutbox):
@@ -218,8 +219,8 @@ def test_email_sent_on_completion(mailoutbox):
         }
     )
 
-    work_order_service.update_status(wo.id, "Em Execução", user)
-    work_order_service.update_status(wo.id, "Concluída", user)
+    work_order_service.update_status(wo.id, WorkOrderStatus.IN_PROGRESS.value, user)
+    work_order_service.update_status(wo.id, WorkOrderStatus.DONE.value, user)
 
     assert len(mailoutbox) == 1
     assert mailoutbox[0].to == [user.email]
@@ -242,12 +243,12 @@ def test_patch_status_persists(api_client):
     api_client.force_authenticate(user=user)
     response = api_client.patch(
         f"/api/work-orders/{wo.id}/",
-        {"status": "Em Execução"},
+        {"status": WorkOrderStatus.IN_PROGRESS.value},
         format="json",
     )
     assert response.status_code == 200
-    assert response.json()["status"] == "Em Execução"
+    assert response.json()["status"] == WorkOrderStatus.IN_PROGRESS.value
 
     from traknor.infrastructure.work_orders.models import WorkOrder as WOModel
 
-    assert WOModel.objects.get(id=wo.id).status == "Em Execução"
+    assert WOModel.objects.get(id=wo.id).status == WorkOrderStatus.IN_PROGRESS.value
