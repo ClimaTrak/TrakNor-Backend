@@ -50,8 +50,12 @@ def create(data: dict) -> WorkOrder:
 
 def update_status(work_order_id: int, new_status: str, changed_by: User) -> WorkOrder:
     obj = WorkOrderModel.objects.get(id=work_order_id)
-    valid = {"Aberta": "Em Execução", "Em Execução": "Concluída"}
-    if valid.get(obj.status) != new_status:
+    valid = {
+        "Aberta": ["Em Execução", "Em Espera"],
+        "Em Espera": ["Em Execução"],
+        "Em Execução": ["Concluída"],
+    }
+    if new_status not in valid.get(obj.status, []):
         raise ValueError("Invalid status transition")
     WorkOrderHistoryModel.objects.create(
         work_order=obj,
