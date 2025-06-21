@@ -167,3 +167,31 @@ def test_email_sent_on_completion(mailoutbox):
 
     assert len(mailoutbox) == 1
     assert mailoutbox[0].to == [user.email]
+
+
+def test_patch_status_persists(api_client):
+    """PATCH update should change work order status in the database."""
+    user, equip = _create_basic_objects()
+    wo = work_order_service.create(
+        {
+            "equipment": equip,
+            "priority": "Alta",
+            "scheduled_date": date.today(),
+            "created_by": user,
+            "description": "Teste",
+            "cost": 0,
+        }
+    )
+
+    api_client.force_authenticate(user=user)
+    response = api_client.patch(
+        f"/api/work-orders/{wo.id}/",
+        {"status": "Em Execução"},
+        format="json",
+    )
+    assert response.status_code == 200
+    assert response.json()["status"] == "Em Execução"
+
+    from traknor.infrastructure.work_orders.models import WorkOrder as WOModel
+
+    assert WOModel.objects.get(id=wo.id).status == "Em Execução"
