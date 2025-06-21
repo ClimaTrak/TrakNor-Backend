@@ -68,3 +68,23 @@ def test_dashboard_summary_counts(client):
     assert data["open_work_orders"] == 1
     assert data["work_orders_last_30_days"] == 1
     assert data["critical_equipment"] == 1
+
+
+def test_kpi_endpoint(client):
+    user = _create_user()
+    equip = _create_equipment()
+    _create_work_order(user, equip, "Concluída", days_ago=1)
+
+    login_resp = client.post(
+        reverse("accounts:login"),
+        {"email": "user@example.com", "password": "pass"},
+        content_type="application/json",
+    )
+    token = login_resp.json()["access"]
+
+    resp = client.get(
+        reverse("dashboard:kpis"), HTTP_AUTHORIZATION=f"Bearer {token}"
+    )
+    assert resp.status_code == 200
+    data = resp.json()
+    assert "openOrders" in data

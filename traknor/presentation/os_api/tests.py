@@ -76,3 +76,50 @@ def test_invalid_params(client):
     url = reverse("os_api:list") + "?assignee=me&date=bad"
     resp = client.get(url, **headers)
     assert resp.status_code == 400
+
+
+def test_execute_success(client):
+    user = _create_user()
+    equip = _create_equipment()
+    wo = _create_work_order(user, equip, date.today())
+    wo.status = "Em Execução"
+    wo.save()
+
+    headers = _auth_headers(client)
+    url = reverse("os_api:execute", args=[wo.id])
+    resp = client.patch(url, **headers)
+    assert resp.status_code == 200
+    assert resp.json()["status"] == "Concluída"
+
+
+def test_execute_forbidden(client):
+    _create_user()
+    other = User.objects.create_user(
+        email="other@example.com",
+        password="pass",
+        first_name="O",
+        last_name="U",
+        role="TECH",
+    )
+    equip = _create_equipment()
+    wo = _create_work_order(other, equip, date.today())
+    wo.status = "Em Execução"
+    wo.save()
+
+    headers = _auth_headers(client)
+    url = reverse("os_api:execute", args=[wo.id])
+    resp = client.patch(url, **headers)
+    assert resp.status_code == 403
+
+
+def test_open_orders_list(client):
+    user = _create_user()
+    equip = _create_equipment()
+    _create_work_order(user, equip, date.today())
+    _create_work_order(user, equip, date.today())
+
+    headers = _auth_headers(client)
+    url = reverse("os_api:open")
+    resp = client.get(url + "?limit=1&offset=0", **headers)
+    assert resp.status_code == 200
+    assert len(resp.json()) == 1

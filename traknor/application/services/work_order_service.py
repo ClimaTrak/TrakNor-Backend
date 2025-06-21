@@ -99,3 +99,26 @@ def list_today(user_id: int, target_date: date) -> List[WorkOrder]:
         created_by_id=user_id, scheduled_date=target_date
     )
     return [_to_domain(obj) for obj in qs]
+
+
+def execute(work_order_id: int, assignee: User) -> WorkOrder:
+    """Finalize a work order execution."""
+    obj = WorkOrderModel.objects.get(id=work_order_id)
+    if obj.created_by_id != assignee.id:
+        raise PermissionError("User is not the assignee")
+    if obj.status != "Em Execução":
+        raise ValueError("Work order not in progress")
+
+    WorkOrderHistoryModel.objects.create(
+        work_order=obj,
+        old_status=obj.status,
+        new_status="Concluída",
+        changed_by=assignee,
+    )
+
+    obj.status = "Concluída"
+    if obj.completed_date is None:
+        obj.completed_date = date.today()
+        send_work_order_completed(obj)
+    obj.save()
+    return _to_domain(obj)
