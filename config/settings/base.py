@@ -28,6 +28,7 @@ INSTALLED_APPS = [
     "traknor.infrastructure.work_orders",
     "traknor.presentation.accounts",
     "traknor.presentation.equipment",
+    "traknor.presentation.dashboard",
     "traknor.presentation.work_orders",
 ]
 
