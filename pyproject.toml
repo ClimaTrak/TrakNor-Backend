@@ -1,0 +1,6 @@
+[tool.ruff]
+extend-exclude = ["migrations"]
+line-length = 88
+
+[tool.ruff.lint]
+ignore = ["I001"]

@@ -1,6 +1,6 @@
 from rest_framework import viewsets
-from rest_framework.response import Response
 from rest_framework.decorators import action
+from rest_framework.response import Response
 
 from traknor.application.services import work_order_service
 from traknor.infrastructure.work_orders.serializers import (
@@ -13,7 +13,8 @@ from traknor.infrastructure.work_orders.work_order_history_serializer import (
 
 
 class WorkOrderViewSet(viewsets.ViewSet):
-    """Interface de listagem, criação, visualização e atualização de ordens de serviço. (sem exclusão)"""
+    """Interface de listagem, criação, visualização e atualização de ordens de
+    serviço. (sem exclusão)"""
 
     def list(self, request):
         work_orders = work_order_service.list_by_filter(

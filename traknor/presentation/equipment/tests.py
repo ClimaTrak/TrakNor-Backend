@@ -25,7 +25,11 @@ def test_create_and_list_equipment(client):
 def _upload_csv(client, content: str):
     from django.core.files.uploadedfile import SimpleUploadedFile
 
-    file = SimpleUploadedFile("eq.csv", content.encode("utf-8"), content_type="text/csv")
+    file = SimpleUploadedFile(
+        "eq.csv",
+        content.encode("utf-8"),
+        content_type="text/csv",
+    )
     url = reverse("equipment-import")
     return client.post(url, {"file": file})
 
