@@ -81,7 +81,7 @@ def test_crud_operations(client):
     _create_asset(model, "T3")
     resp = client.put(
         reverse("asset-detail", args=[asset.id]),
-        {"tag": "T3"},
+        {"name": "U2", "tag": "T3", "model": model.id, "location": {"r": "2"}},
         content_type="application/json",
     )
     assert resp.status_code == 422

@@ -9,6 +9,7 @@ from traknor.application.services import (
     list_today_orders,
     work_order_service,
 )
+from traknor.domain.constants import WorkOrderStatus
 from traknor.infrastructure.work_orders.models import WorkOrder as WorkOrderModel
 from traknor.infrastructure.work_orders.serializers import (
     WorkOrderSerializerList,
@@ -66,7 +67,7 @@ class OpenOrdersListView(APIView):
             return Response({"error": "Invalid parameters"}, status=400)
 
         orders = work_order_service.list_by_filter(
-            status="Aberta", start_date=date_from, end_date=date_to
+            status=WorkOrderStatus.OPEN.value, start_date=date_from, end_date=date_to
         )
         subset = orders[offset : offset + limit]
         serializer = WorkOrderSerializerOpen(subset, many=True)

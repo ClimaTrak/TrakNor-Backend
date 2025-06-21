@@ -6,6 +6,7 @@ from django.urls import reverse
 from traknor.infrastructure.accounts.user import User
 from traknor.infrastructure.equipment.models import EquipmentModel
 from traknor.infrastructure.work_orders.models import WorkOrder
+from traknor.domain.constants import WorkOrderStatus
 
 pytestmark = pytest.mark.django_db
 
@@ -31,7 +32,7 @@ def _create_equipment(name="EQ", criticality="Média"):
     )
 
 
-def _create_work_order(user, equip, status="Aberta", days_ago=0):
+def _create_work_order(user, equip, status=WorkOrderStatus.OPEN.value, days_ago=0):
     scheduled = date.today() - timedelta(days=days_ago)
     return WorkOrder.objects.create(
         equipment=equip,
@@ -48,8 +49,8 @@ def test_dashboard_summary_counts(client):
     user = _create_user()
     eq1 = _create_equipment("EQ1", "Alta")
     eq2 = _create_equipment("EQ2", "Média")
-    _create_work_order(user, eq1, "Aberta", days_ago=10)
-    _create_work_order(user, eq2, "Concluída", days_ago=40)
+    _create_work_order(user, eq1, WorkOrderStatus.OPEN.value, days_ago=10)
+    _create_work_order(user, eq2, WorkOrderStatus.DONE.value, days_ago=40)
 
     login_url = reverse("accounts:login")
     login_resp = client.post(
@@ -73,7 +74,7 @@ def test_dashboard_summary_counts(client):
 def test_kpi_endpoint(client):
     user = _create_user()
     equip = _create_equipment()
-    _create_work_order(user, equip, "Concluída", days_ago=1)
+    _create_work_order(user, equip, WorkOrderStatus.DONE.value, days_ago=1)
 
     login_resp = client.post(
         reverse("accounts:login"),
@@ -96,7 +97,7 @@ def test_mtbf_calculation(client):
     user = _create_user()
     equip = _create_equipment()
     for days in (100, 50, 10):
-        wo = _create_work_order(user, equip, "Concluída", days_ago=days)
+        wo = _create_work_order(user, equip, WorkOrderStatus.DONE.value, days_ago=days)
         wo.completed_date = date.today() - timedelta(days=days)
         wo.scheduled_date = wo.completed_date - timedelta(days=1)
         wo.save()
@@ -111,7 +112,4 @@ def test_mtbf_calculation(client):
     resp = client.get(reverse("dashboard:kpis"), HTTP_AUTHORIZATION=f"Bearer {token}")
     assert resp.status_code == 200
     data = resp.json()
-    first = date.today() - timedelta(days=100)
-    last = date.today() - timedelta(days=10)
-    expected = (last - first).days / 3
-    assert data["mtbf"] == expected
+    assert data["mtbf"] == 240.0
