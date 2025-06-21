@@ -3,7 +3,7 @@ from traknor.infrastructure.assets.models import AssetModel
 
 
 class DuplicateTagError(Exception):
-    pass
+    """Raised when an asset with the provided tag already exists."""
 
 
 def create(data: dict) -> Asset:

@@ -22,18 +22,30 @@ def _add_months(d: date, months: int) -> date:
     month = (d.month - 1 + months) % 12 + 1
     day = min(
         d.day,
-        [31, 29 if year % 4 == 0 and (year % 100 != 0 or year % 400 == 0) else 28,
-         31, 30, 31, 30, 31, 31, 30, 31, 30, 31][month - 1],
+        [
+            31,
+            29 if year % 4 == 0 and (year % 100 != 0 or year % 400 == 0) else 28,
+            31,
+            30,
+            31,
+            30,
+            31,
+            31,
+            30,
+            31,
+            30,
+            31,
+        ][month - 1],
     )
     return date(year, month, day)
 
 
 class AssetNotFoundError(Exception):
-    pass
+    """Raised when the referenced asset does not exist."""
 
 
 class InvalidFrequencyError(Exception):
-    pass
+    """Raised when an unsupported frequency value is used."""
 
 
 def generate(

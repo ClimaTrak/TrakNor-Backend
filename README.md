@@ -11,10 +11,12 @@ Django 4.2 project structured with Clean Architecture. The core layers are:
 
 ```bash
 cp .env.example .env
+# adjust DEBUG and ALLOWED_HOSTS as needed
 python -m venv venv
 . venv/bin/activate
 pip install -r requirements.txt
 python manage.py migrate
+python manage.py createsuperuser  # optional
 ```
 
 ## Running

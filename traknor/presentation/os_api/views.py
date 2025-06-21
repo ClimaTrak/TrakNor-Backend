@@ -13,6 +13,8 @@ from traknor.infrastructure.work_orders.models import WorkOrder as WorkOrderMode
 
 
 class OsListView(APIView):
+    """List work orders assigned to a user on a specific date."""
+
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
@@ -50,6 +52,8 @@ class OsListView(APIView):
 
 
 class OpenOrdersListView(APIView):
+    """List open work orders with optional pagination."""
+
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
@@ -84,6 +88,8 @@ class OpenOrdersListView(APIView):
 
 
 class OsExecuteView(APIView):
+    """Mark a work order as executed by the authenticated user."""
+
     permission_classes = [IsAuthenticated]
 
     def patch(self, request, pk):
