@@ -10,6 +10,7 @@ paths:
   <<: { $ref: './dashboard.yaml#/paths' }
   <<: { $ref: './report.yaml#/paths' }
   <<: { $ref: './profile.yaml#/paths' }
+  <<: { $ref: './twofa.yaml#/paths' }
 components:
   <<: { $ref: './asset.yaml#/components' }
   <<: { $ref: './workorder.yaml#/components' }
@@ -17,3 +18,4 @@ components:
   <<: { $ref: './auth.yaml#/components' }
   <<: { $ref: './dashboard.yaml#/components' }
   <<: { $ref: './profile.yaml#/components' }
+  <<: { $ref: './twofa.yaml#/components' }

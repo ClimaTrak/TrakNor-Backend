@@ -1,0 +1,59 @@
+openapi: 3.1.0
+info:
+  title: TrakNor API – 2FA
+  version: "1.0"
+paths:
+  /api/2fa/setup/:
+    post:
+      summary: Setup 2FA
+      tags: [2FA]
+      responses:
+        "200":
+          description: QR code generated
+  /api/2fa/verify/:
+    post:
+      summary: Confirm 2FA setup
+      tags: [2FA]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  type: string
+      responses:
+        "200":
+          description: Enabled
+        "400":
+          description: Invalid token
+  /api/2fa/:
+    delete:
+      summary: Disable 2FA
+      tags: [2FA]
+      responses:
+        "204":
+          description: Disabled
+  /api/auth/2fa-token/:
+    post:
+      summary: Complete 2FA login
+      tags: [2FA]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                temp_token:
+                  type: string
+                token:
+                  type: string
+      responses:
+        "200":
+          description: Tokens issued
+        "400":
+          description: Invalid token
+
+components: {}

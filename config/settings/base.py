@@ -7,12 +7,14 @@ BASE_DIR = Path(__file__).resolve().parents[2]
 env = environ.Env(
     DEBUG=(bool, False),
     SECRET_KEY=(str, "change-me"),
+    ENABLE_2FA=(bool, False),
 )
 
 environ.Env.read_env(env.str("ENV_FILE", ".env"))
 
 DEBUG = env("DEBUG")
 SECRET_KEY = env("SECRET_KEY")
+ENABLE_2FA = env("ENABLE_2FA")
 ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
@@ -26,6 +28,9 @@ INSTALLED_APPS = [
     "rest_framework_simplejwt",
     "drf_spectacular",
     "drf_spectacular_sidecar",
+    "django_otp",
+    "django_otp.plugins.otp_totp",
+    "two_factor",
     "traknor.infrastructure.accounts.apps.AccountsInfraConfig",
     "traknor.infrastructure.audit.apps.AuditInfraConfig",
     "traknor.infrastructure.equipment",

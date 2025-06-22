@@ -14,4 +14,10 @@ drf-spectacular>=0.27
 drf-spectacular-sidecar
 pyyaml
 
+# Two-factor authentication stub
+django-otp>=1.2
+django-two-factor-auth>=1.16
+qrcode[pil]
+phonenumbers
+
 mypy

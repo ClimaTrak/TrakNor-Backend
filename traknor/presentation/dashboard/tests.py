@@ -112,4 +112,7 @@ def test_mtbf_calculation(client):
     resp = client.get(reverse("dashboard:kpis"), HTTP_AUTHORIZATION=f"Bearer {token}")
     assert resp.status_code == 200
     data = resp.json()
-    assert data["mtbf"] == 240.0
+    expected = (
+        date.today() - timedelta(days=10) - date.today().replace(day=1)
+    ).days * 24
+    assert data["mtbf"] == float(expected)

@@ -22,6 +22,8 @@ python manage.py migrate
 python manage.py createsuperuser  # optional
 ```
 
+Set `ENABLE_2FA=true` in `.env` to activate the optional two-factor flows.
+
 ## Running
 
 ```bash

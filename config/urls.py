@@ -6,6 +6,7 @@ from drf_spectacular.views import (
     SpectacularSwaggerView,
 )
 import traknor.presentation.profile
+from django.conf import settings
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -17,6 +18,11 @@ urlpatterns = [
     path("api/pmoc/", include("traknor.presentation.pmoc.urls")),
     path("api/os/", include("traknor.presentation.os_api.urls")),
     path("api/reports/", include("traknor.presentation.reports.urls")),
+    *(
+        [path("", include("traknor.presentation.twofa.urls"))]
+        if settings.ENABLE_2FA
+        else []
+    ),
     path(
         "api/profile/",
         traknor.presentation.profile.ProfileView.as_view(),
