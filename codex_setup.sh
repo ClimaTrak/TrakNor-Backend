@@ -33,6 +33,7 @@ cd backend
 python$PYTHON_VERSION -m venv .venv
 source .venv/bin/activate
 pip install --upgrade pip
+sudo apt-get update && sudo apt-get install -y libffi-dev libssl-dev
 pip install -r requirements.txt                # dependências Django/DRF
 pip install pre-commit commitizen              # ferramenta Codex → hooks
 pre-commit install                             # ruff / isort / black / pytest

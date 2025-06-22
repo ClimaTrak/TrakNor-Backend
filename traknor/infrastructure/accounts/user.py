@@ -57,6 +57,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         choices=Roles.choices,
         default=Roles.TECHNICIAN,
     )  # type: ignore[assignment]
+    is_2fa_enabled: bool = models.BooleanField(default=False)
     is_active: bool = models.BooleanField(default=True)  # type: ignore[assignment]
     is_staff: bool = models.BooleanField(default=False)  # type: ignore[assignment]
     date_joined: timezone.datetime = models.DateTimeField(default=timezone.now)  # type: ignore[assignment]
